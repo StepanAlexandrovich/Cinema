@@ -5,21 +5,21 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 
 import androidx.lifecycle.ViewModelProvider
-import java.android.cinema.R
-import java.android.cinema.databinding.FragmentListMoviesBinding
+import java.android.cinema.databinding.FragmentMovieBinding
+
 import java.android.cinema.viewmodel.AppState
 
-class ListMoviesFragment: Fragment() {
+class MovieFragment: Fragment() {
 
     companion object{
-        fun newInstance() = ListMoviesFragment()
+        fun newInstance() = MovieFragment()
     }
 
-    lateinit var binding: FragmentListMoviesBinding
+    lateinit var binding: FragmentMovieBinding
     lateinit var viewModel: ListMoviesViewModel
 
     override fun onCreateView(
@@ -27,7 +27,7 @@ class ListMoviesFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentListMoviesBinding.inflate(inflater)
+        binding = FragmentMovieBinding.inflate(inflater)
         return binding.root
     }
 
@@ -39,20 +39,21 @@ class ListMoviesFragment: Fragment() {
         viewModel = ViewModelProvider(this).get(ListMoviesViewModel::class.java)
         viewModel.getLiveData().observe(viewLifecycleOwner) { t -> renderData(t) }
         viewModel.sentRequest()
-
     }
 
     private fun renderData(appState: AppState){
 
         when(appState){
             is AppState.Error -> {
-
+                binding.textViewTitle.text = "Фильм не загружен, попробуйте ещё раз"
             }
             AppState.Loading -> {
-
+                //Toast.makeText(requireContext(),"идёт загрузка",Toast.LENGTH_LONG).show()
             }
             is AppState.Success -> {
-
+                val result = appState.movieData
+                binding.textViewTitle.text = result.title
+                binding.textViewDescription.text = result.getDescription()
             }
         }
 

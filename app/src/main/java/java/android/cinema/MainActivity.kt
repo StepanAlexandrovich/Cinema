@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import java.android.cinema.databinding.ActivityMainBinding
 import java.android.cinema.view.viewmovies.ListMoviesFragment
+import java.android.cinema.view.viewmovies.MovieFragment
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(p0: View?) {
-        supportFragmentManager.beginTransaction().replace(R.id.container,ListMoviesFragment.newInstance()).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.container, MovieFragment.newInstance()).addToBackStack(null).commit()
     }
 
 

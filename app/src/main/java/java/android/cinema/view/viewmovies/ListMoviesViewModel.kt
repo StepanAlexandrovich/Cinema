@@ -8,7 +8,7 @@ import java.android.cinema.model.RepositoryRemoteImpl
 import java.android.cinema.viewmodel.AppState
 import java.lang.IllegalStateException
 
-class SelectedMoviesViewModel(private val liveData:MutableLiveData<AppState> = MutableLiveData<AppState>()):ViewModel() {
+class ListMoviesViewModel(private val liveData:MutableLiveData<AppState> = MutableLiveData<AppState>()):ViewModel() {
 
     private var isConnect = false // временно
 
@@ -21,9 +21,9 @@ class SelectedMoviesViewModel(private val liveData:MutableLiveData<AppState> = M
 
     private fun choiceRepository() = if(isConnection()){
         repository = RepositoryRemoteImpl()
+        repository.getMovie()
     }else{
-        //repository = RepositoryLocalImpl()
-        repository = RepositoryRemoteImpl()
+        repository = RepositoryLocalImpl()
     }
 
     fun sentRequest(){
@@ -38,8 +38,9 @@ class SelectedMoviesViewModel(private val liveData:MutableLiveData<AppState> = M
     }
 
     private fun isConnection(): Boolean {
-        isConnect = !isConnect
-        return isConnect
+        //isConnect = !isConnect
+        //return isConnect
+        return true
     }
 
 }
