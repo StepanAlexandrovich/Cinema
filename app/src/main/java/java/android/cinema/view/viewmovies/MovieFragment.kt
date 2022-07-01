@@ -5,13 +5,13 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 
 import androidx.lifecycle.ViewModelProvider
 import java.android.cinema.databinding.FragmentMovieBinding
 
 import java.android.cinema.viewmodel.AppState
+import java.android.cinema.viewmodel.ListMoviesViewModel
 
 class MovieFragment: Fragment() {
 
@@ -37,7 +37,7 @@ class MovieFragment: Fragment() {
         //downLoad() с колбэком
 
         viewModel = ViewModelProvider(this).get(ListMoviesViewModel::class.java)
-        viewModel.getLiveData().observe(viewLifecycleOwner) { t -> renderData(t) }
+        viewModel.getLiveDataComedy().observe(viewLifecycleOwner) { t -> renderData(t) }
         viewModel.sentRequest()
     }
 
@@ -50,10 +50,13 @@ class MovieFragment: Fragment() {
             AppState.Loading -> {
                 //Toast.makeText(requireContext(),"идёт загрузка",Toast.LENGTH_LONG).show()
             }
-            is AppState.Success -> {
+            is AppState.SuccessOne -> {
                 val result = appState.movieData
                 binding.textViewTitle.text = result.title
                 binding.textViewDescription.text = result.getDescription()
+            }
+            is AppState.SuccessComedy -> {
+                //appState.movieList
             }
         }
 

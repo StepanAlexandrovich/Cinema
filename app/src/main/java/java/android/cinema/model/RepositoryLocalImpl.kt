@@ -4,15 +4,24 @@ import java.android.cinema.storage.Movie
 import java.android.cinema.storage.Movies
 
 class RepositoryLocalImpl:Repository {
-    val movies = Movies()
+    private val movies = Movies()
+
+    override fun getMovie(): Movie {
+        val index = (0 until movies.comedy.size).random()
+        return movies.getMovie(0,index)
+    }
 
     override fun getListMovies(): List<Movie> {
         return movies.comedy
     }
 
-    override fun getMovie(): Movie {
-        val index = (0 until movies.comedy.size).random()
-        return movies.getMovie(0,index)
+    override fun getListMovies(index: Int): List<Movie> {
+        // временно
+        if(index == 0){ return movies.comedy }
+        if(index == 1){ return movies.fantasy }
+        if(index == 2){ return movies.favorites }
+
+        return movies.comedy
     }
 
 }
