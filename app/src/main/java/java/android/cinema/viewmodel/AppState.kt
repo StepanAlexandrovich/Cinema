@@ -1,6 +1,6 @@
 package java.android.cinema.viewmodel
 
-import java.android.cinema.storage.Movie
+import java.android.cinema.domen.Movie
 
 sealed class AppState {
     data class SuccessOne(val movieData: Movie) : AppState()

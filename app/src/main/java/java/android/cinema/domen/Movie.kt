@@ -1,6 +1,10 @@
-package java.android.cinema.storage
+package java.android.cinema.domen
 
-class Movie(val title: String) {
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+class Movie(val title: String):Parcelable{
     private var duration:String? = null
     private var rating:String? = null
 

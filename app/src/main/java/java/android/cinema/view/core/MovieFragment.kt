@@ -1,4 +1,4 @@
-package java.android.cinema.view.viewmovies
+package java.android.cinema.view.core
 
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -7,17 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-import androidx.lifecycle.ViewModelProvider
 import java.android.cinema.databinding.FragmentMovieBinding
+import java.android.cinema.domen.Movie
 
-import java.android.cinema.viewmodel.AppState
 import java.android.cinema.viewmodel.ListMoviesViewModel
 
 class MovieFragment: Fragment() {
 
-    companion object{
-        fun newInstance() = MovieFragment()
-    }
+
 
     lateinit var binding: FragmentMovieBinding
     lateinit var viewModel: ListMoviesViewModel
@@ -36,30 +33,13 @@ class MovieFragment: Fragment() {
 
         //downLoad() с колбэком
 
-        viewModel = ViewModelProvider(this).get(ListMoviesViewModel::class.java)
-        viewModel.getLiveDataComedy().observe(viewLifecycleOwner) { t -> renderData(t) }
-        viewModel.sentRequest()
+        val movie = arguments?.getParcelable<Movie>(BUNDLE_MOVIE_EXTRA)
+        if(movie!=null){ renderData(movie) }
     }
 
-    private fun renderData(appState: AppState){
-
-        when(appState){
-            is AppState.Error -> {
-                binding.textViewTitle.text = "Фильм не загружен, попробуйте ещё раз"
-            }
-            AppState.Loading -> {
-                //Toast.makeText(requireContext(),"идёт загрузка",Toast.LENGTH_LONG).show()
-            }
-            is AppState.SuccessOne -> {
-                val result = appState.movieData
-                binding.textViewTitle.text = result.title
-                binding.textViewDescription.text = result.getDescription()
-            }
-            is AppState.SuccessComedy -> {
-                //appState.movieList
-            }
-        }
-
+    private fun renderData(movie: Movie){
+        binding.textViewTitle.text = movie.title
+        binding.textViewDescription.text = movie.getDescription()
     }
 
     // подключить с колбэком
@@ -78,6 +58,16 @@ class MovieFragment: Fragment() {
         }.start()
     }
 
+    companion object {
+        const val BUNDLE_MOVIE_EXTRA = "sgrrdfge"
+        fun newInstance(movie: Movie): MovieFragment {
+            val bundle = Bundle()
+            bundle.putParcelable(BUNDLE_MOVIE_EXTRA,movie)
+            val fr = MovieFragment()
+            fr.arguments = bundle
+            return fr
+        }
+    }
 
 }
 

@@ -1,25 +1,21 @@
 package java.android.cinema.model
 
-import java.android.cinema.storage.Movie
-import java.android.cinema.storage.Movies
+import java.android.cinema.domen.Movie
+import java.android.cinema.domen.Movies
 
-class RepositoryLocalImpl:Repository {
-    private val movies = Movies()
+class RepositoryLocalImpl:RepositoryMovie,RepositoryMovies {
+    val movies = Movies()
 
-    override fun getMovie(): Movie {
-        val index = (0 until movies.comedy.size).random()
-        return movies.getMovie(0,index)
-    }
-
-    override fun getListMovies(): List<Movie> {
-        return movies.comedy
+    override fun getMovie(indexGenre: Int, indexMovie: Int): Movie {
+        val listMovie:List<Movie> = getListMovies(indexGenre)
+        return listMovie[indexMovie]
     }
 
     override fun getListMovies(index: Int): List<Movie> {
         // временно
         if(index == 0){ return movies.comedy }
         if(index == 1){ return movies.fantasy }
-        if(index == 2){ return movies.favorites }
+        if(index == 2){ return movies.animated }
 
         return movies.comedy
     }
