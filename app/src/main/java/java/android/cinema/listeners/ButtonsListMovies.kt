@@ -11,12 +11,14 @@ class ButtonsListMovies(val binding: FragmentListMoviesBinding,val listMoviesFra
     init {
         binding.buttonUpdateLocalData.setOnClickListener(this)
         binding.buttonUpdateRemoteData.setOnClickListener(this)
+        binding.buttonSnackBarMenu.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
         when (p0?.getId()) {
             binding.buttonUpdateLocalData.id -> { listMoviesFragment.updateLocalData() }
             binding.buttonUpdateRemoteData.id -> { listMoviesFragment.updateRemoteData() }
+            binding.buttonSnackBarMenu.id -> { listMoviesFragment.snackBarMenu() }
         }
     }
 }

@@ -1,5 +1,6 @@
 package java.android.cinema.view.core
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import java.android.cinema.R
 
 import java.android.cinema.databinding.FragmentListMoviesBinding
@@ -81,6 +83,33 @@ class ListMoviesFragment: Fragment() {
 
     fun updateRemoteData(){
         Toast.makeText(requireContext(),"remote",Toast.LENGTH_SHORT).show()
+    }
+
+    fun snackBarMenu(){
+        val linearLayout = binding.listGenres
+        val snackBar:Snackbar = Snackbar.make(linearLayout,"",Snackbar.LENGTH_INDEFINITE)
+        val custom:View = layoutInflater.inflate(R.layout.snackbar_custom,null)
+        snackBar.view.setBackgroundColor(Color.TRANSPARENT)
+        val snackBarLayout: Snackbar.SnackbarLayout = snackBar.view as Snackbar.SnackbarLayout
+        snackBarLayout.setPadding(0,0,0,0)
+
+        custom.findViewById<View>(R.id.buttonDismissSnackBarMenu).setOnClickListener(View.OnClickListener {
+            snackBar.dismiss()
+
+            //snackBar.showMessage() // extension function
+            snackBar.showMessage("extension function")
+        })
+
+        snackBarLayout.addView(custom)
+        snackBar.show()
+    }
+
+    private fun Snackbar.showMessage(){
+        Toast.makeText(requireContext(),"showMessage",Toast.LENGTH_SHORT).show()
+    }
+
+    private fun Snackbar.showMessage(text:String){
+        Toast.makeText(requireContext(),text,Toast.LENGTH_SHORT).show()
     }
 
     private fun updateItemGenre(item: View, title:String, movies: List<Movie>){

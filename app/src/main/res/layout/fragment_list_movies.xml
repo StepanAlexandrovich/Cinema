@@ -23,6 +23,13 @@
             android:layout_weight="1"
             android:text="updateRemote" />
 
+        <Button
+            android:id="@+id/buttonSnackBarMenu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="SnackBar" />
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
