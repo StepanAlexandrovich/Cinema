@@ -22,8 +22,8 @@ import java.android.cinema.databinding.FragmentListMoviesBinding
 import java.android.cinema.domen.Movie
 import java.android.cinema.listeners.ButtonsListMovies
 import java.android.cinema.listeners.OnItemClick
-import java.android.cinema.view.helpers.HelperToFragment
-import java.android.cinema.view.helpers.HelperToRecycler
+import java.android.cinema.view.utilsToView.Navigation
+import java.android.cinema.view.utilsToView.UtilsToRecycler
 import java.android.cinema.viewmodel.AppState
 import java.android.cinema.viewmodel.ListMoviesViewModel
 
@@ -61,7 +61,7 @@ class ListMoviesFragment: Fragment() {
         rvGenres = binding.rvGenres
         rvGenres.layoutManager = LinearLayoutManager(requireContext())
         rvGenres.adapter = RecyclerAdapterGenres(OnItemClick {
-            HelperToFragment.createFragmentWithBackStack(requireActivity() as AppCompatActivity, R.id.container,MovieFragment.newInstance(it))
+            Navigation.createFragmentWithBackStack(requireActivity() as AppCompatActivity, R.id.container,MovieFragment.newInstance(it))
         })
 
         ////////////
@@ -116,7 +116,7 @@ class ListMoviesFragment: Fragment() {
         item.findViewById<TextView>(R.id.textViewGenre).text = title
 
         val rv:RecyclerView = item.findViewById<RecyclerView>(R.id.rv)
-        rv.layoutManager = HelperToRecycler.createLayoutHorizontalManagerInversion(requireActivity() as AppCompatActivity)
+        rv.layoutManager = UtilsToRecycler.createLayoutHorizontalManagerInversion(requireActivity() as AppCompatActivity)
         val adapter = rv.adapter as RecyclerAdapterMovies
         adapter.setList(movies)
 

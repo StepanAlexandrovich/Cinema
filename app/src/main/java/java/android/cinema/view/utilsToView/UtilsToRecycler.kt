@@ -1,10 +1,10 @@
-package java.android.cinema.view.helpers
+package java.android.cinema.view.utilsToView
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-object HelperToRecycler {
+object UtilsToRecycler {
 
     fun createLayoutHorizontalManager(activity: AppCompatActivity):LinearLayoutManager{
         return LinearLayoutManager(activity, RecyclerView.HORIZONTAL,false)
