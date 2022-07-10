@@ -1,12 +1,13 @@
 package java.android.cinema.view.core
 
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 
 import androidx.fragment.app.Fragment
@@ -22,12 +23,17 @@ import java.android.cinema.databinding.FragmentListMoviesBinding
 import java.android.cinema.domen.Movie
 import java.android.cinema.listeners.ButtonsListMovies
 import java.android.cinema.listeners.OnItemClick
+import java.android.cinema.utils.MoviesLoader
 import java.android.cinema.view.utilsToView.Navigation
 import java.android.cinema.view.utilsToView.UtilsToRecycler
 import java.android.cinema.viewmodel.AppState
 import java.android.cinema.viewmodel.ListMoviesViewModel
 
+import java.android.cinema.model.dto.Result
+
 class ListMoviesFragment: Fragment() {
+
+    val moviesFromInternet = mutableListOf<Movie>()  // временно
 
     companion object{
         fun newInstance() = ListMoviesFragment()
@@ -50,6 +56,7 @@ class ListMoviesFragment: Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -67,22 +74,44 @@ class ListMoviesFragment: Fragment() {
         ////////////
         viewModel = ViewModelProvider(this).get(ListMoviesViewModel::class.java)
 
-        viewModel.getLiveDataComedy().observe(viewLifecycleOwner) { t -> renderData(t) }
-        viewModel.getLiveDataFantasy().observe(viewLifecycleOwner) { t -> renderData(t) }
-        viewModel.getLiveDataFavorites().observe(viewLifecycleOwner) { t -> renderData(t) }
+        viewModel.getLiveDataComedy().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
+        viewModel.getLiveDataFantasy().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
+        viewModel.getLiveDataFavorites().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
 
-        //viewModel.sentRequest()
+        viewModel.getLiveDataFromInternet().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
+
+        //viewModel.sentRequest()   // восстановить
+
+
+        // загрузка фильмов из интернета   ПЕРЕДЕЛАТЬ
+        var results:List<Result>
+        var strings = mutableListOf<String>()
+
+        MoviesLoader.request{ moviesDTO ->
+            requireActivity().runOnUiThread{
+
+                results = moviesDTO.results
+
+                results.forEach(){
+                    strings.add(it.title)
+                    moviesFromInternet .add(Movie(it.title))
+                }
+
+            }
+        }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     fun updateLocalData(){
-        Toast.makeText(requireContext(),"local",Toast.LENGTH_SHORT).show()
-
         listItemsGenres = (rvGenres.adapter as RecyclerAdapterGenres).listItems
         viewModel.sentRequest()
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     fun updateRemoteData(){
-        Toast.makeText(requireContext(),"remote",Toast.LENGTH_SHORT).show()
+        listItemsGenres = (rvGenres.adapter as RecyclerAdapterGenres).listItems
+        updateItemGenre(listItemsGenres[2],"FROM INTERNET",moviesFromInternet)
+        //viewModel.sentRequest() // реализовать
     }
 
     fun snackBarMenu(){
@@ -95,21 +124,10 @@ class ListMoviesFragment: Fragment() {
 
         custom.findViewById<View>(R.id.buttonDismissSnackBarMenu).setOnClickListener(View.OnClickListener {
             snackBar.dismiss()
-
-            //snackBar.showMessage() // extension function
-            snackBar.showMessage("extension function")
         })
 
         snackBarLayout.addView(custom)
         snackBar.show()
-    }
-
-    private fun Snackbar.showMessage(){
-        Toast.makeText(requireContext(),"showMessage",Toast.LENGTH_SHORT).show()
-    }
-
-    private fun Snackbar.showMessage(text:String){
-        Toast.makeText(requireContext(),text,Toast.LENGTH_SHORT).show()
     }
 
     private fun updateItemGenre(item: View, title:String, movies: List<Movie>){
@@ -124,7 +142,7 @@ class ListMoviesFragment: Fragment() {
         adapter.notifyDataSetChanged()
     }
 
-    private fun renderData(appState: AppState){
+    private fun renderDataLocal(appState: AppState){
 
         when(appState){
             is AppState.Error -> {
@@ -141,7 +159,10 @@ class ListMoviesFragment: Fragment() {
                 updateItemGenre(listItemsGenres[1],"FANTASY",appState.movieList)
             }
             is AppState.SuccessFavorites -> {
-                updateItemGenre(listItemsGenres[2],"ANIMATED",appState.movieList)
+                //updateItemGenre(listItemsGenres[2],"ANIMATED",appState.movieList)
+            }
+            is AppState.SuccessFromInternet -> {
+                //updateItemGenre(listItemsGenres[2],"FROM INTERNET",appState.movieList)
             }
         }
 

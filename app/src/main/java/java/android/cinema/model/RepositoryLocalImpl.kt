@@ -20,4 +20,8 @@ class RepositoryLocalImpl:RepositoryMovie,RepositoryMovies {
         return movies.comedy
     }
 
+    override fun getListMovies():List<Movie>{
+        return movies.animated
+    }
+
 }

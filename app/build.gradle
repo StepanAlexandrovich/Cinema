@@ -7,7 +7,12 @@ plugins {
 android {
     compileSdk 31
 
-
+    buildTypes.each {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("apikey.properties").newDataInputStream())
+        def apiKey = properties.getProperty("api_key","")
+        it.buildConfigField "String", "API_KEY", apiKey
+    }
 
     defaultConfig {
         applicationId "java.android.cinema"

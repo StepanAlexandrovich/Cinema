@@ -1,13 +1,25 @@
 package java.android.cinema.model
 
 import java.android.cinema.domen.Movie
-import java.android.cinema.domen.Movies
 
-class RepositoryRemoteImpl:RepositoryMovie {
-    private val movies = Movies()
+class RepositoryRemoteImpl:RepositoryMovie,RepositoryMovies {
+    private var movies = mutableListOf<Movie>()
+
 
     override fun getMovie(indexGenre: Int, indexMovie: Int): Movie {
-        TODO("Not yet implemented")
+        return movies[0]
     }
+
+    override fun getListMovies(index: Int): List<Movie> {
+        return movies
+    }
+
+    override fun getListMovies(): List<Movie> {
+        return movies
+    }
+
+
+
+
 
 }
