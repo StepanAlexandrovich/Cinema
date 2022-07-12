@@ -20,6 +20,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".internet.download.IntentServiceMoviesDTO"
+            android:exported="true"/>
+
+        <receiver android:name=".phone.BroadCastReceiverAirPlaneMode"
+            android:exported="true"
+            android:enabled="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.AIRPLANE_MODE" />
+                <action android:name="myAction" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

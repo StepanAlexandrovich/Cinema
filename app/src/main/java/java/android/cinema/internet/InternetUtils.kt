@@ -1,11 +1,11 @@
-package java.android.cinema.utils
+package java.android.cinema.internet
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import java.io.BufferedReader
 import java.util.stream.Collectors
 
-object Internet {
+object InternetUtils {
     @RequiresApi(Build.VERSION_CODES.N)
     fun getLines(reader: BufferedReader): String {
         return reader.lines().collect(Collectors.joining(""))

@@ -1,4 +1,4 @@
-package java.android.cinema.view.core
+package java.android.cinema.view.details
 
 import android.os.*
 import android.view.LayoutInflater

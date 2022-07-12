@@ -1,4 +1,4 @@
-package java.android.cinema.listeners
+package java.android.cinema.view.mainscreen
 
 
 import android.os.Build
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import androidx.annotation.RequiresApi
 import java.android.cinema.databinding.FragmentListMoviesBinding
-import java.android.cinema.view.core.ListMoviesFragment
+import java.android.cinema.view.mainscreen.ListMoviesFragment
 
 class ButtonsListMovies(val binding: FragmentListMoviesBinding,val listMoviesFragment: ListMoviesFragment): OnClickListener{
 

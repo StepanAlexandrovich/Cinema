@@ -1,5 +1,9 @@
-package java.android.cinema.view.core
+package java.android.cinema.view.mainscreen
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,19 +26,19 @@ import java.android.cinema.R
 import java.android.cinema.databinding.FragmentListMoviesBinding
 
 import java.android.cinema.domen.Movie
-import java.android.cinema.listeners.ButtonsListMovies
-import java.android.cinema.listeners.OnItemClick
-import java.android.cinema.utils.MoviesLoader
+import java.android.cinema.internet.download.*
+import java.android.cinema.model.dto.MoviesDTO
 import java.android.cinema.view.utilsToView.Navigation
 import java.android.cinema.view.utilsToView.UtilsToRecycler
 import java.android.cinema.viewmodel.AppState
 import java.android.cinema.viewmodel.ListMoviesViewModel
 
 import java.android.cinema.model.dto.Result
+import java.android.cinema.view.details.*
 
 class ListMoviesFragment: Fragment() {
 
-    val moviesFromInternet = mutableListOf<Movie>()  // временно
+    private val moviesFromInternet = mutableListOf(mutableListOf<Movie>(),mutableListOf<Movie>()) // временно
 
     companion object{
         fun newInstance() = ListMoviesFragment()
@@ -63,12 +68,12 @@ class ListMoviesFragment: Fragment() {
         // buttons
         ButtonsListMovies(binding,this)
 
-        //downLoad() с колбэком
-
         rvGenres = binding.rvGenres
         rvGenres.layoutManager = LinearLayoutManager(requireContext())
         rvGenres.adapter = RecyclerAdapterGenres(OnItemClick {
-            Navigation.createFragmentWithBackStack(requireActivity() as AppCompatActivity, R.id.container,MovieFragment.newInstance(it))
+            Navigation.createFragmentWithBackStack(requireActivity() as AppCompatActivity, R.id.container,
+                MovieFragment.newInstance(it)
+            )
         })
 
         ////////////
@@ -78,27 +83,16 @@ class ListMoviesFragment: Fragment() {
         viewModel.getLiveDataFantasy().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
         viewModel.getLiveDataFavorites().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
 
-        viewModel.getLiveDataFromInternet().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
+        viewModel.getLiveDataFromInternet().observe(viewLifecycleOwner) { t -> renderDataLocal(t) } // пока в холостую
 
         //viewModel.sentRequest()   // восстановить
 
-
         // загрузка фильмов из интернета   ПЕРЕДЕЛАТЬ
-        var results:List<Result>
-        var strings = mutableListOf<String>()
+        //downLoad()
 
-        MoviesLoader.request{ moviesDTO ->
-            requireActivity().runOnUiThread{
+        //downloadOutServer("inception 2010",0)
+        downloadOutServer("lost 2004",1)
 
-                results = moviesDTO.results
-
-                results.forEach(){
-                    strings.add(it.title)
-                    moviesFromInternet .add(Movie(it.title))
-                }
-
-            }
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -110,9 +104,68 @@ class ListMoviesFragment: Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     fun updateRemoteData(){
         listItemsGenres = (rvGenres.adapter as RecyclerAdapterGenres).listItems
-        updateItemGenre(listItemsGenres[2],"FROM INTERNET",moviesFromInternet)
+
+        if(moviesFromInternet[0].size>0){ updateItemGenre(listItemsGenres[1],"inception 2010",moviesFromInternet[0]) } // временно
+        if(moviesFromInternet[1].size>0){ updateItemGenre(listItemsGenres[2],"lost 2004",moviesFromInternet[1]) }      // временно
         //viewModel.sentRequest() // реализовать
     }
+
+    private fun downloadOutServer(typeMovies: String, index:Int){
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+            object : BroadcastReceiver(){
+                override fun onReceive(p0: Context?, intent: Intent?) {
+                    intent?.let {
+                        it.getParcelableExtra<MoviesDTO>(BUNDLE_MOVIES_DTO_KEY)?.let {
+                            moviesFromInternet.add(moviesDTOinListMovies(it))
+
+                            moviesFromInternet.set(index,moviesDTOinListMovies(it))
+
+                        }
+                    }
+                }
+            }, IntentFilter(WAVE)
+        )
+
+        requireActivity().startService(Intent(requireContext(), IntentServiceMoviesDTO::class.java).apply {
+            putExtra(BUNDLE_TYPE_MOVIES_KEY,typeMovies)
+        })
+
+    }
+
+    // ПЕРЕНЕСУ В РЕПОЗИТОРИЙ
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun downLoad(){
+        var results:List<Result>
+        var strings = mutableListOf<String>()
+
+        MoviesLoader.request{ moviesDTO ->
+            requireActivity().runOnUiThread{
+
+                results = moviesDTO.results
+
+                results.forEach(){
+                    strings.add(it.title)
+                    //moviesFromInternet1 .add(Movie(it.title))
+                }
+
+            }
+        }
+    }
+
+    // ВРЕМЕННО ПОД СЕРВЕР
+    fun moviesDTOinListMovies(moviesDTO: MoviesDTO):MutableList<Movie>{
+        var strings = mutableListOf<String>()
+        val moviesFromInternet = mutableListOf<Movie>()
+
+        moviesDTO.results.forEach(){
+            strings.add(it.title)
+            moviesFromInternet.add(Movie(it.title))
+        }
+
+        return moviesFromInternet
+    }
+
+
 
     fun snackBarMenu(){
         val linearLayout = binding.listGenres
@@ -156,13 +209,13 @@ class ListMoviesFragment: Fragment() {
                 updateItemGenre(listItemsGenres[0],"COMEDY",appState.movieList)
             }
             is AppState.SuccessFantasy -> {
-                updateItemGenre(listItemsGenres[1],"FANTASY",appState.movieList)
+                //updateItemGenre(listItemsGenres[1],"FANTASY",appState.movieList)
             }
             is AppState.SuccessFavorites -> {
                 //updateItemGenre(listItemsGenres[2],"ANIMATED",appState.movieList)
             }
             is AppState.SuccessFromInternet -> {
-                //updateItemGenre(listItemsGenres[2],"FROM INTERNET",appState.movieList)
+                //updateItemGenre(listItemsGenres[3],"FROM INTERNET",appState.movieList)
             }
         }
 

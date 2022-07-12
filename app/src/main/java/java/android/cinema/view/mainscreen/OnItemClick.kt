@@ -1,4 +1,4 @@
-package java.android.cinema.listeners
+package java.android.cinema.view.mainscreen
 
 import java.android.cinema.domen.Movie
 

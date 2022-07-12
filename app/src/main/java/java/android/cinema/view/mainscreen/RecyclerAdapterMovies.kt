@@ -1,4 +1,4 @@
-package java.android.cinema.view.core
+package java.android.cinema.view.mainscreen
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,9 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 import java.android.cinema.databinding.ItemMovieBinding
 import java.android.cinema.domen.Movie
-import java.android.cinema.listeners.OnItemClick
 
-class RecyclerAdapterMovies(private val onItemClick:OnItemClick): RecyclerView.Adapter<RecyclerAdapterMovies.ViewHolder>() {
+class RecyclerAdapterMovies(private val onItemClick: OnItemClick): RecyclerView.Adapter<RecyclerAdapterMovies.ViewHolder>() {
 
     private var list:List<Movie> = emptyList()
 
