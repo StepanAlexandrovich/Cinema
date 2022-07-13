@@ -1,12 +1,8 @@
 package java.android.cinema.view.mainscreen
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,16 +12,20 @@ import androidx.appcompat.app.AppCompatActivity
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import okhttp3.Call
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.android.cinema.BuildConfig
 import java.android.cinema.R
 
 import java.android.cinema.databinding.FragmentListMoviesBinding
 
 import java.android.cinema.domen.Movie
+import java.android.cinema.domen.Movies
 import java.android.cinema.internet.download.*
 import java.android.cinema.model.dto.MoviesDTO
 import java.android.cinema.view.utilsToView.Navigation
@@ -36,16 +36,12 @@ import java.android.cinema.viewmodel.ListMoviesViewModel
 import java.android.cinema.model.dto.Result
 import java.android.cinema.utils.SimpleNotifications
 import java.android.cinema.view.details.*
+import java.net.URL
 
 class ListMoviesFragment: Fragment() {
 
     private var _binding: FragmentListMoviesBinding? = null
     val binding: FragmentListMoviesBinding get() { return _binding!! }
-
-    private val moviesFromInternet = mutableListOf(mutableListOf<Movie>(),mutableListOf<Movie>()) // временно
-    private var indexGenre = 0; // ненадолго
-
-    private val receiver:BroadcastReceiver = createReceiver()
 
     companion object{
         fun newInstance() = ListMoviesFragment()
@@ -54,14 +50,15 @@ class ListMoviesFragment: Fragment() {
     private lateinit var viewModel: ListMoviesViewModel
 
     //////////
-
     private lateinit var listItemsGenres:List<View>
     private lateinit var rvGenres:RecyclerView
+
+    private val moviesFromInternet = mutableListOf<Movie>()
+    private var genreFromInternet = "fringe"
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(receiver)
     }
 
     override fun onCreateView(
@@ -99,84 +96,67 @@ class ListMoviesFragment: Fragment() {
 
         //viewModel.sentRequest()   - > восстановить
 
-        //downLoad()   загрузка фильмов из интернета - >  ПЕРЕДЕЛАТЬ
+        //downLoad()   //загрузка фильмов из интернета - >  ПЕРЕДЕЛАТЬ
 
-
-        // временная дичь
-        if(indexGenre==0){
-            LocalBroadcastManager.getInstance(requireContext()).registerReceiver(receiver as BroadcastReceiver, IntentFilter(WAVE) );  Thread.sleep(1000)
-
-            sender("inception 2010")     ;Thread.sleep(2000)
-            sender("lost 2004")
-        }
-
+        downloadOkhttp()
     }
 
-    private fun createReceiver():BroadcastReceiver{
-        val receiver = object : BroadcastReceiver(){
-            override fun onReceive(p0: Context?, intent: Intent?) {
-                intent?.let {
-                    it.getParcelableExtra<MoviesDTO>(BUNDLE_MOVIES_DTO_KEY)?.let {
-                        moviesFromInternet.set(indexGenre++,moviesDTOinListMovies(it))
+    private fun downloadOkhttp(){
+        val client = OkHttpClient()
+        val builder = Request.Builder()
+
+        //builder.url("https://imdb-api.com/en/API/SearchMovie/${BuildConfig.API_KEY}/${genreFromInternet}") // ещё не дают доступ по старому api_key
+        val newKey = "k_71rwtkzg"; builder.url("https://imdb-api.com/en/API/SearchMovie/${newKey}/${genreFromInternet}")
+
+        val request:Request = builder.build()
+        val cal: Call = client.newCall(request)
+        Thread{
+            val response = cal.execute()
+            if(response.isSuccessful){}
+            if(response.code in 200..299){
+                response.body?.let {
+                    val responseString = it.string()
+                    val moviesDTO = Gson().fromJson(responseString,MoviesDTO::class.java)
+                    val strings = mutableListOf<String>()
+
+                    requireActivity().runOnUiThread{
+                        if(moviesDTO.results==null){
+                            SimpleNotifications.printShort("Возможно вы исчерпали лимит")
+                        }else{
+                            moviesDTO.results.forEach(){
+                                strings.add(it.title)
+                                moviesFromInternet.add(Movie(it.title))
+                            }
+                        }
                     }
                 }
             }
-        }
-        return receiver
-    }
+        }.start()
 
-    private fun sender(typeMovies: String) {
-        requireActivity().startService(Intent(requireContext(), IntentServiceMoviesDTO::class.java).apply {
-            putExtra(BUNDLE_TYPE_MOVIES_KEY,typeMovies)
-        })
-    }
-
-    private fun sender1(typeMovies: String) {
-
-        val intent = Intent(requireContext(), IntentServiceMoviesDTO::class.java)
-
-        requireActivity().startService(intent)
-
-        intent.apply {
-            putExtra(BUNDLE_TYPE_MOVIES_KEY,typeMovies)
-        }
     }
 
     // ПЕРЕНЕСУ В РЕПОЗИТОРИЙ
     @RequiresApi(Build.VERSION_CODES.N)
     fun downLoad(){
-        var results:List<Result>
-        var strings = mutableListOf<String>()
+        //MoviesLoader.stringGenre = "inception 2010"
+        MoviesLoader.stringGenre = genreFromInternet
+
+        val strings = mutableListOf<String>()
 
         MoviesLoader.request{ moviesDTO ->
             requireActivity().runOnUiThread{
 
-                results = moviesDTO.results
-
-                results.forEach(){
-                    strings.add(it.title)
-                    //moviesFromInternet1 .add(Movie(it.title))
+                if(moviesDTO.results==null){
+                    SimpleNotifications.printShort("Возможно вы исчерпали лимит")
+                }else{
+                    moviesDTO.results.forEach(){
+                        strings.add(it.title)
+                        moviesFromInternet.add(Movie(it.title))
+                    }
                 }
 
             }
         }
-    }
-
-    // ВРЕМЕННО ПОД СЕРВЕР
-    fun moviesDTOinListMovies(moviesDTO: MoviesDTO):MutableList<Movie>{
-        var strings = mutableListOf<String>()
-        val moviesFromInternet = mutableListOf<Movie>()
-
-        if(moviesDTO.results==null){
-            SimpleNotifications.printShort("Возможно вы исчерпали лимит")
-        }else{
-            moviesDTO.results.forEach(){
-                strings.add(it.title)
-                moviesFromInternet.add(Movie(it.title))
-            }
-        }
-
-        return moviesFromInternet
     }
 
     private fun updateItemGenre(item: View, title:String, movies: List<Movie>){
@@ -205,7 +185,7 @@ class ListMoviesFragment: Fragment() {
                 updateItemGenre(listItemsGenres[0],"COMEDY",appState.movieList)
             }
             is AppState.SuccessFantasy -> {
-                //updateItemGenre(listItemsGenres[1],"FANTASY",appState.movieList)
+                updateItemGenre(listItemsGenres[1],"FANTASY",appState.movieList)
             }
             is AppState.SuccessFavorites -> {
                 //updateItemGenre(listItemsGenres[2],"ANIMATED",appState.movieList)
@@ -228,8 +208,7 @@ class ListMoviesFragment: Fragment() {
     fun updateRemoteData(){
         listItemsGenres = (rvGenres.adapter as RecyclerAdapterGenres).listItems
 
-        if(moviesFromInternet[0].size>0){ updateItemGenre(listItemsGenres[1],"inception 2010",moviesFromInternet[0]) } // временно
-        if(moviesFromInternet[1].size>0){ updateItemGenre(listItemsGenres[2],"lost 2004",moviesFromInternet[1]) }      // временно
+        if(moviesFromInternet.size>0){ updateItemGenre(listItemsGenres[2],genreFromInternet,moviesFromInternet) } // временно
         //viewModel.sentRequest() // реализовать
     }
 
@@ -237,22 +216,6 @@ class ListMoviesFragment: Fragment() {
         ListMoviesSnackBar.snackBarMenu(this)
     }
     ///////////////////////////////////
-
-    // подключить с колбэком
-    //fun downLoad(){
-        //val progressBar = binding.progressBar
-
-        //object : CountDownTimer(10000,500){
-          //  override fun onTick(p0: Long) {
-                //if(progressBar.progress < progressBar.max){
-                    //progressBar.progress += 10
-                //}
-            //}
-
-            //override fun onFinish() { }
-
-        //}.start()
-    //}
 
 }
 
