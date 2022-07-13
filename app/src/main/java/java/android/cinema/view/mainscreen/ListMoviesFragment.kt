@@ -16,9 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
-import okhttp3.Call
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import okhttp3.*
 import java.android.cinema.BuildConfig
 import java.android.cinema.R
 
@@ -36,6 +34,7 @@ import java.android.cinema.viewmodel.ListMoviesViewModel
 import java.android.cinema.model.dto.Result
 import java.android.cinema.utils.SimpleNotifications
 import java.android.cinema.view.details.*
+import java.io.IOException
 import java.net.URL
 
 class ListMoviesFragment: Fragment() {
@@ -110,28 +109,37 @@ class ListMoviesFragment: Fragment() {
 
         val request:Request = builder.build()
         val cal: Call = client.newCall(request)
-        Thread{
-            val response = cal.execute()
-            if(response.isSuccessful){}
-            if(response.code in 200..299){
-                response.body?.let {
-                    val responseString = it.string()
-                    val moviesDTO = Gson().fromJson(responseString,MoviesDTO::class.java)
-                    val strings = mutableListOf<String>()
 
-                    requireActivity().runOnUiThread{
-                        if(moviesDTO.results==null){
-                            SimpleNotifications.printShort("Возможно вы исчерпали лимит")
-                        }else{
-                            moviesDTO.results.forEach(){
-                                strings.add(it.title)
-                                moviesFromInternet.add(Movie(it.title))
+        cal.enqueue( object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                // TODO("Not yet implemented")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if(response.isSuccessful){}
+                if(response.code in 200..299&&response.body!=null){
+                    response.body?.let {
+                        val responseString = it.string()
+                        val moviesDTO = Gson().fromJson(responseString,MoviesDTO::class.java)
+                        val strings = mutableListOf<String>()
+
+                        requireActivity().runOnUiThread {
+                            if (moviesDTO.results == null) {
+                                SimpleNotifications.printShort("Возможно вы исчерпали лимит")
+                            } else {
+                                moviesDTO.results.forEach() {
+                                    strings.add(it.title)
+                                    moviesFromInternet.add(Movie(it.title))
+                                }
                             }
                         }
                     }
+                }else{
+                    // TODO
                 }
             }
-        }.start()
+
+        })
 
     }
 
