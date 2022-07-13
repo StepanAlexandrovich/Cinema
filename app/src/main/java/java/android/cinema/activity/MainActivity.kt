@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(){
         setContentView(binding.root)
 
         if(savedInstanceState == null){
-            Navigation.createFragmentWithBackStack(this,R.id.container, ListMoviesFragment.newInstance())
+            Navigation.createFragment(this,R.id.container, ListMoviesFragment.newInstance())
         }
 
         //startService(Intent(this,MyService::class.java).apply {

@@ -34,30 +34,42 @@ import java.android.cinema.viewmodel.AppState
 import java.android.cinema.viewmodel.ListMoviesViewModel
 
 import java.android.cinema.model.dto.Result
+import java.android.cinema.utils.SimpleNotifications
 import java.android.cinema.view.details.*
 
 class ListMoviesFragment: Fragment() {
 
+    private var _binding: FragmentListMoviesBinding? = null
+    val binding: FragmentListMoviesBinding get() { return _binding!! }
+
     private val moviesFromInternet = mutableListOf(mutableListOf<Movie>(),mutableListOf<Movie>()) // временно
+    private var indexGenre = 0; // ненадолго
+
+    private val receiver:BroadcastReceiver = createReceiver()
 
     companion object{
         fun newInstance() = ListMoviesFragment()
     }
 
-    lateinit var binding: FragmentListMoviesBinding
-    lateinit var viewModel: ListMoviesViewModel
+    private lateinit var viewModel: ListMoviesViewModel
 
     //////////
 
     private lateinit var listItemsGenres:List<View>
     private lateinit var rvGenres:RecyclerView
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(receiver)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentListMoviesBinding.inflate(inflater)
+        _binding = FragmentListMoviesBinding.inflate(inflater)
         return binding.root
     }
 
@@ -66,7 +78,7 @@ class ListMoviesFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // buttons
-        ButtonsListMovies(binding,this)
+        ListMoviesButtons(binding,this)
 
         rvGenres = binding.rvGenres
         rvGenres.layoutManager = LinearLayoutManager(requireContext())
@@ -85,51 +97,49 @@ class ListMoviesFragment: Fragment() {
 
         viewModel.getLiveDataFromInternet().observe(viewLifecycleOwner) { t -> renderDataLocal(t) } // пока в холостую
 
-        //viewModel.sentRequest()   // восстановить
+        //viewModel.sentRequest()   - > восстановить
 
-        // загрузка фильмов из интернета   ПЕРЕДЕЛАТЬ
-        //downLoad()
+        //downLoad()   загрузка фильмов из интернета - >  ПЕРЕДЕЛАТЬ
 
-        //downloadOutServer("inception 2010",0)
-        downloadOutServer("lost 2004",1)
+
+        // временная дичь
+        if(indexGenre==0){
+            LocalBroadcastManager.getInstance(requireContext()).registerReceiver(receiver as BroadcastReceiver, IntentFilter(WAVE) );  Thread.sleep(1000)
+
+            sender("inception 2010")     ;Thread.sleep(2000)
+            sender("lost 2004")
+        }
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun updateLocalData(){
-        listItemsGenres = (rvGenres.adapter as RecyclerAdapterGenres).listItems
-        viewModel.sentRequest()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun updateRemoteData(){
-        listItemsGenres = (rvGenres.adapter as RecyclerAdapterGenres).listItems
-
-        if(moviesFromInternet[0].size>0){ updateItemGenre(listItemsGenres[1],"inception 2010",moviesFromInternet[0]) } // временно
-        if(moviesFromInternet[1].size>0){ updateItemGenre(listItemsGenres[2],"lost 2004",moviesFromInternet[1]) }      // временно
-        //viewModel.sentRequest() // реализовать
-    }
-
-    private fun downloadOutServer(typeMovies: String, index:Int){
-        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
-            object : BroadcastReceiver(){
-                override fun onReceive(p0: Context?, intent: Intent?) {
-                    intent?.let {
-                        it.getParcelableExtra<MoviesDTO>(BUNDLE_MOVIES_DTO_KEY)?.let {
-                            moviesFromInternet.add(moviesDTOinListMovies(it))
-
-                            moviesFromInternet.set(index,moviesDTOinListMovies(it))
-
-                        }
+    private fun createReceiver():BroadcastReceiver{
+        val receiver = object : BroadcastReceiver(){
+            override fun onReceive(p0: Context?, intent: Intent?) {
+                intent?.let {
+                    it.getParcelableExtra<MoviesDTO>(BUNDLE_MOVIES_DTO_KEY)?.let {
+                        moviesFromInternet.set(indexGenre++,moviesDTOinListMovies(it))
                     }
                 }
-            }, IntentFilter(WAVE)
-        )
+            }
+        }
+        return receiver
+    }
 
+    private fun sender(typeMovies: String) {
         requireActivity().startService(Intent(requireContext(), IntentServiceMoviesDTO::class.java).apply {
             putExtra(BUNDLE_TYPE_MOVIES_KEY,typeMovies)
         })
+    }
 
+    private fun sender1(typeMovies: String) {
+
+        val intent = Intent(requireContext(), IntentServiceMoviesDTO::class.java)
+
+        requireActivity().startService(intent)
+
+        intent.apply {
+            putExtra(BUNDLE_TYPE_MOVIES_KEY,typeMovies)
+        }
     }
 
     // ПЕРЕНЕСУ В РЕПОЗИТОРИЙ
@@ -157,30 +167,16 @@ class ListMoviesFragment: Fragment() {
         var strings = mutableListOf<String>()
         val moviesFromInternet = mutableListOf<Movie>()
 
-        moviesDTO.results.forEach(){
-            strings.add(it.title)
-            moviesFromInternet.add(Movie(it.title))
+        if(moviesDTO.results==null){
+            SimpleNotifications.printShort("Возможно вы исчерпали лимит")
+        }else{
+            moviesDTO.results.forEach(){
+                strings.add(it.title)
+                moviesFromInternet.add(Movie(it.title))
+            }
         }
 
         return moviesFromInternet
-    }
-
-
-
-    fun snackBarMenu(){
-        val linearLayout = binding.listGenres
-        val snackBar:Snackbar = Snackbar.make(linearLayout,"",Snackbar.LENGTH_INDEFINITE)
-        val custom:View = layoutInflater.inflate(R.layout.snackbar_custom,null)
-        snackBar.view.setBackgroundColor(Color.TRANSPARENT)
-        val snackBarLayout: Snackbar.SnackbarLayout = snackBar.view as Snackbar.SnackbarLayout
-        snackBarLayout.setPadding(0,0,0,0)
-
-        custom.findViewById<View>(R.id.buttonDismissSnackBarMenu).setOnClickListener(View.OnClickListener {
-            snackBar.dismiss()
-        })
-
-        snackBarLayout.addView(custom)
-        snackBar.show()
     }
 
     private fun updateItemGenre(item: View, title:String, movies: List<Movie>){
@@ -220,6 +216,27 @@ class ListMoviesFragment: Fragment() {
         }
 
     }
+
+    ///////// FUN TO BUTTONS ///////
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun updateLocalData(){
+        listItemsGenres = (rvGenres.adapter as RecyclerAdapterGenres).listItems
+        viewModel.sentRequest()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun updateRemoteData(){
+        listItemsGenres = (rvGenres.adapter as RecyclerAdapterGenres).listItems
+
+        if(moviesFromInternet[0].size>0){ updateItemGenre(listItemsGenres[1],"inception 2010",moviesFromInternet[0]) } // временно
+        if(moviesFromInternet[1].size>0){ updateItemGenre(listItemsGenres[2],"lost 2004",moviesFromInternet[1]) }      // временно
+        //viewModel.sentRequest() // реализовать
+    }
+
+    fun snackBarMenu(){
+        ListMoviesSnackBar.snackBarMenu(this)
+    }
+    ///////////////////////////////////
 
     // подключить с колбэком
     //fun downLoad(){

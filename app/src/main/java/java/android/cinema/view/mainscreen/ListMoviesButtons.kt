@@ -8,7 +8,7 @@ import androidx.annotation.RequiresApi
 import java.android.cinema.databinding.FragmentListMoviesBinding
 import java.android.cinema.view.mainscreen.ListMoviesFragment
 
-class ButtonsListMovies(val binding: FragmentListMoviesBinding,val listMoviesFragment: ListMoviesFragment): OnClickListener{
+class ListMoviesButtons(val binding: FragmentListMoviesBinding, val listMoviesFragment: ListMoviesFragment): OnClickListener{
 
     init {
         binding.buttonUpdateLocalData.setOnClickListener(this)
@@ -19,9 +19,9 @@ class ButtonsListMovies(val binding: FragmentListMoviesBinding,val listMoviesFra
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onClick(p0: View?) {
         when (p0?.getId()) {
-            binding.buttonUpdateLocalData.id -> { listMoviesFragment.updateLocalData() }
+            binding.buttonUpdateLocalData.id  -> { listMoviesFragment.updateLocalData() }
             binding.buttonUpdateRemoteData.id -> { listMoviesFragment.updateRemoteData() }
-            binding.buttonSnackBarMenu.id -> { listMoviesFragment.snackBarMenu() }
+            binding.buttonSnackBarMenu.id     -> { listMoviesFragment.snackBarMenu() }
         }
     }
 }
