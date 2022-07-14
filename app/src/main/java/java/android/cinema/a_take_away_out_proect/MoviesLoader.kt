@@ -1,12 +1,13 @@
-package java.android.cinema.internet.download
+package java.android.cinema.a_take_away_out_proect
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import java.android.cinema.BuildConfig
+import java.android.cinema.Genre
 import java.android.cinema.internet.InternetUtils
 import java.android.cinema.model.dto.MoviesDTO
-import java.android.cinema.utils.SimpleNotifications
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -15,14 +16,12 @@ import java.net.MalformedURLException
 import java.net.URL
 
 object MoviesLoader {
-    lateinit var stringGenre:String
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun request(block:(movies:MoviesDTO)->Unit){
 
         try {
-            //val uri = URL("https://imdb-api.com/en/API/SearchMovie/${BuildConfig.API_KEY}/${it}")
-            val newKey = "k_71rwtkzg"  ; val uri = URL("https://imdb-api.com/en/API/SearchMovie/${newKey}/${stringGenre}")
+            val uri = URL("https://imdb-api.com/en/API/SearchMovie/${BuildConfig.API_KEY}/${Genre.genre}")
 
             Thread{
 

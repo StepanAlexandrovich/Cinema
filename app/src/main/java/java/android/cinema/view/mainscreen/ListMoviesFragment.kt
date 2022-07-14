@@ -2,7 +2,6 @@ package java.android.cinema.view.mainscreen
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,27 +14,20 @@ import androidx.lifecycle.ViewModelProvider
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import okhttp3.*
-import java.android.cinema.BuildConfig
 import java.android.cinema.R
 
 import java.android.cinema.databinding.FragmentListMoviesBinding
 
 import java.android.cinema.domen.Movie
-import java.android.cinema.domen.Movies
-import java.android.cinema.internet.download.*
 import java.android.cinema.model.dto.MoviesDTO
 import java.android.cinema.view.utilsToView.Navigation
 import java.android.cinema.view.utilsToView.UtilsToRecycler
 import java.android.cinema.viewmodel.AppState
 import java.android.cinema.viewmodel.ListMoviesViewModel
 
-import java.android.cinema.model.dto.Result
 import java.android.cinema.utils.SimpleNotifications
-import java.android.cinema.view.details.*
-import java.io.IOException
-import java.net.URL
+import java.android.cinema.view.details.MovieFragment
+
 
 class ListMoviesFragment: Fragment() {
 
@@ -76,6 +68,7 @@ class ListMoviesFragment: Fragment() {
         // buttons
         ListMoviesButtons(binding,this)
 
+        // recycle
         rvGenres = binding.rvGenres
         rvGenres.layoutManager = LinearLayoutManager(requireContext())
         rvGenres.adapter = RecyclerAdapterGenres(OnItemClick {
@@ -84,87 +77,17 @@ class ListMoviesFragment: Fragment() {
             )
         })
 
-        ////////////
+        // view model
         viewModel = ViewModelProvider(this).get(ListMoviesViewModel::class.java)
 
         viewModel.getLiveDataComedy().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
         viewModel.getLiveDataFantasy().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
         viewModel.getLiveDataFavorites().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
 
-        viewModel.getLiveDataFromInternet().observe(viewLifecycleOwner) { t -> renderDataLocal(t) } // пока в холостую
+        viewModel.getLiveDataFromInternetOkHttp().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
+        viewModel.getLiveDataFromInternetRetrofit().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
 
-        //viewModel.sentRequest()   - > восстановить
-
-        //downLoad()   //загрузка фильмов из интернета - >  ПЕРЕДЕЛАТЬ
-
-        downloadOkhttp()
-    }
-
-    private fun downloadOkhttp(){
-        val client = OkHttpClient()
-        val builder = Request.Builder()
-
-        //builder.url("https://imdb-api.com/en/API/SearchMovie/${BuildConfig.API_KEY}/${genreFromInternet}") // ещё не дают доступ по старому api_key
-        val newKey = "k_71rwtkzg"; builder.url("https://imdb-api.com/en/API/SearchMovie/${newKey}/${genreFromInternet}")
-
-        val request:Request = builder.build()
-        val cal: Call = client.newCall(request)
-
-        cal.enqueue( object : Callback{
-            override fun onFailure(call: Call, e: IOException) {
-                // TODO("Not yet implemented")
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                if(response.isSuccessful){}
-                if(response.code in 200..299&&response.body!=null){
-                    response.body?.let {
-                        val responseString = it.string()
-                        val moviesDTO = Gson().fromJson(responseString,MoviesDTO::class.java)
-                        val strings = mutableListOf<String>()
-
-                        requireActivity().runOnUiThread {
-                            if (moviesDTO.results == null) {
-                                SimpleNotifications.printShort("Возможно вы исчерпали лимит")
-                            } else {
-                                moviesDTO.results.forEach() {
-                                    strings.add(it.title)
-                                    moviesFromInternet.add(Movie(it.title))
-                                }
-                            }
-                        }
-                    }
-                }else{
-                    // TODO
-                }
-            }
-
-        })
-
-    }
-
-    // ПЕРЕНЕСУ В РЕПОЗИТОРИЙ
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun downLoad(){
-        //MoviesLoader.stringGenre = "inception 2010"
-        MoviesLoader.stringGenre = genreFromInternet
-
-        val strings = mutableListOf<String>()
-
-        MoviesLoader.request{ moviesDTO ->
-            requireActivity().runOnUiThread{
-
-                if(moviesDTO.results==null){
-                    SimpleNotifications.printShort("Возможно вы исчерпали лимит")
-                }else{
-                    moviesDTO.results.forEach(){
-                        strings.add(it.title)
-                        moviesFromInternet.add(Movie(it.title))
-                    }
-                }
-
-            }
-        }
+        //viewModel.sentRequest() // восстановить
     }
 
     private fun updateItemGenre(item: View, title:String, movies: List<Movie>){
@@ -190,19 +113,38 @@ class ListMoviesFragment: Fragment() {
             }
 
             is AppState.SuccessComedy -> {
-                updateItemGenre(listItemsGenres[0],"COMEDY",appState.movieList)
+                updateItemGenre(listItemsGenres[0],"LOCAL REPOSITORY",appState.movieList)
             }
             is AppState.SuccessFantasy -> {
-                updateItemGenre(listItemsGenres[1],"FANTASY",appState.movieList)
+                //updateItemGenre(listItemsGenres[1],"FANTASY",appState.movieList)
             }
             is AppState.SuccessFavorites -> {
                 //updateItemGenre(listItemsGenres[2],"ANIMATED",appState.movieList)
             }
-            is AppState.SuccessFromInternet -> {
-                //updateItemGenre(listItemsGenres[3],"FROM INTERNET",appState.movieList)
+            is AppState.SuccessFromInternetOkHttp -> {
+                updateItemGenre(listItemsGenres[1],"OkHTTP",moviesDTOinListMovies( appState.movieList ))
+            }
+            is AppState.SuccessFromInternetRetrofit -> {
+                updateItemGenre(listItemsGenres[2],"RETROFIT",moviesDTOinListMovies( appState.movieList ))
             }
         }
 
+    }
+
+    private fun moviesDTOinListMovies(moviesDTO: MoviesDTO):MutableList<Movie>{
+        var strings = mutableListOf<String>()
+        val moviesFromInternet = mutableListOf<Movie>()
+
+        if(moviesDTO.results==null){
+            SimpleNotifications.printShort("Возможно вы исчерпали лимит")
+        }else{
+            moviesDTO.results.forEach(){
+                strings.add(it.title)
+                moviesFromInternet.add(Movie(it.title))
+            }
+        }
+
+        return moviesFromInternet
     }
 
     ///////// FUN TO BUTTONS ///////

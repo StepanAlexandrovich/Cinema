@@ -3,7 +3,7 @@ package java.android.cinema.model
 import java.android.cinema.domen.Movie
 import java.android.cinema.domen.Movies
 
-class RepositoryLocalImpl:RepositoryMovie,RepositoryMovies {
+class RepositoryMoviesLocalImpl:RepositoryMoviesLocal {
     val movies = Movies()
 
     override fun getMovie(indexGenre: Int, indexMovie: Int): Movie {
@@ -18,10 +18,6 @@ class RepositoryLocalImpl:RepositoryMovie,RepositoryMovies {
         if(index == 2){ return movies.animated }
 
         return movies.comedy
-    }
-
-    override fun getListMovies():List<Movie>{
-        return movies.animated
     }
 
 }
