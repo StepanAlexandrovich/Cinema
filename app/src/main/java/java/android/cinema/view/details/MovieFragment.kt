@@ -1,6 +1,8 @@
 package java.android.cinema.view.details
 
-import android.os.*
+
+import android.os.Build
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,7 @@ import androidx.fragment.app.Fragment
 
 import java.android.cinema.databinding.FragmentMovieBinding
 import java.android.cinema.domen.Movie
+import java.android.cinema.internet.WebViewDownloader
 
 class MovieFragment: Fragment() {
 
@@ -30,13 +33,17 @@ class MovieFragment: Fragment() {
         //downLoad() с колбэком
 
         val movie = arguments?.getParcelable<Movie>(BUNDLE_MOVIE_EXTRA)
-
         if(movie!=null){ renderData(movie) }
     }
 
     private fun renderData(movie: Movie){
         binding.textViewTitle.text = movie.title
         binding.textViewDescription.text = movie.getDescription()
+
+        if(movie.urlImage!=null){
+            WebViewDownloader.download(movie.urlImage!!,binding.webViewImage)
+        }
+
     }
 
     companion object {

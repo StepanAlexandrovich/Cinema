@@ -7,10 +7,15 @@ import kotlinx.android.parcel.Parcelize
 class Movie(val title: String):Parcelable{
     private var duration:String? = null
     private var rating:String? = null
+    var urlImage:String? = null
 
     fun setDescription(rating:Int,duration:Int){
         this.rating =  "$rating stars"
         this.duration = "$duration minutes"
+    }
+
+    fun setImage(urlImage:String){
+        this.urlImage = urlImage
     }
 
     fun getDescription():String{

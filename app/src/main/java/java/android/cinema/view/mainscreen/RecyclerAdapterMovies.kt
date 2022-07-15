@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 import java.android.cinema.databinding.ItemMovieBinding
 import java.android.cinema.domen.Movie
+import java.android.cinema.internet.WebViewDownloader
 
 class RecyclerAdapterMovies(private val onItemClick: OnItemClick): RecyclerView.Adapter<RecyclerAdapterMovies.ViewHolder>() {
 
@@ -37,6 +38,11 @@ class RecyclerAdapterMovies(private val onItemClick: OnItemClick): RecyclerView.
             binding.root.setOnClickListener(View.OnClickListener {
                 onItemClick.onItemClick(list[position])
             })
+
+            if(list[position].urlImage!=null){
+                WebViewDownloader.download2(list[position].urlImage!!,binding.imageView)
+            }
+
         }
     }
 

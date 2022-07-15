@@ -132,15 +132,15 @@ class ListMoviesFragment: Fragment() {
     }
 
     private fun moviesDTOinListMovies(moviesDTO: MoviesDTO):MutableList<Movie>{
-        var strings = mutableListOf<String>()
         val moviesFromInternet = mutableListOf<Movie>()
 
         if(moviesDTO.results==null){
             SimpleNotifications.printShort("Возможно вы исчерпали лимит")
         }else{
             moviesDTO.results.forEach(){
-                strings.add(it.title)
-                moviesFromInternet.add(Movie(it.title))
+                val movie:Movie = Movie(it.title)
+                movie.setImage(it.image)
+                moviesFromInternet.add(movie)
             }
         }
 
@@ -156,10 +156,6 @@ class ListMoviesFragment: Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun updateRemoteData(){
-        listItemsGenres = (rvGenres.adapter as RecyclerAdapterGenres).listItems
-
-        if(moviesFromInternet.size>0){ updateItemGenre(listItemsGenres[2],genreFromInternet,moviesFromInternet) } // временно
-        //viewModel.sentRequest() // реализовать
     }
 
     fun snackBarMenu(){
