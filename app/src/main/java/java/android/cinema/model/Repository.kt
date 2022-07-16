@@ -1,13 +1,11 @@
 package java.android.cinema.model
 
-import java.android.cinema.domen.Movie
+import java.android.cinema.domen.Movies
 
 interface RepositoryMoviesLocal {
-    fun getMovie(indexGenre: Int, indexMovie: Int): Movie
-    fun getListMovies(index: Int): List<Movie>
+    fun getGenre(index: Int): Movies.Genre
 }
 
 interface RepositoryMoviesRemote {
-    fun getListMovies(callback: LargeSuperCallback)
-    fun getListMovies(genre:String, callback: LargeSuperCallback)
+    fun getListMovies(indexGenre: Int, callback: LargeSuperCallback)
 }

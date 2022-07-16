@@ -4,16 +4,16 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
-import java.android.cinema.activity.ReferenceMain
-import java.android.cinema.utils.SimpleNotifications
+import java.android.cinema.activity.MainActivity
+import java.android.cinema.utils.PrintVisible
 
 class BroadCastReceiverAirPlaneMode:BroadcastReceiver() {
     override fun onReceive(p0: Context?, intent: Intent?) {
 
-        if(Settings.Global.getInt(ReferenceMain.activityApp!!.contentResolver, Settings.Global.AIRPLANE_MODE_ON,0)!=0){
-            SimpleNotifications.printLong("РЕЖИМ ПОЛЁТА ВКЛЮЧЕН")
+        if(Settings.Global.getInt(MainActivity.activityApp.contentResolver, Settings.Global.AIRPLANE_MODE_ON,0)!=0){
+            PrintVisible.printLong("РЕЖИМ ПОЛЁТА ВКЛЮЧЕН")
         }else{
-            SimpleNotifications.printLong("РЕЖИМ ПОЛЁТА ВЫКЛЮЧЕН")
+            PrintVisible.printLong("РЕЖИМ ПОЛЁТА ВЫКЛЮЧЕН")
         }
 
     }

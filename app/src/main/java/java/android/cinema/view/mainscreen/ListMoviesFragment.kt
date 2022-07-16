@@ -1,5 +1,6 @@
 package java.android.cinema.view.mainscreen
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,24 +9,28 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.android.cinema.PublicSettings
 import java.android.cinema.R
+import java.android.cinema.activity.MainActivity
 
 import java.android.cinema.databinding.FragmentListMoviesBinding
 
 import java.android.cinema.domen.Movie
 import java.android.cinema.model.dto.MoviesDTO
+import java.android.cinema.storage.SharedPref
 import java.android.cinema.view.utilsToView.Navigation
 import java.android.cinema.view.utilsToView.UtilsToRecycler
 import java.android.cinema.viewmodel.AppState
 import java.android.cinema.viewmodel.ListMoviesViewModel
 
-import java.android.cinema.utils.SimpleNotifications
+import java.android.cinema.utils.PrintVisible
 import java.android.cinema.view.details.MovieFragment
 
 
@@ -44,9 +49,6 @@ class ListMoviesFragment: Fragment() {
     private lateinit var listItemsGenres:List<View>
     private lateinit var rvGenres:RecyclerView
 
-    private val moviesFromInternet = mutableListOf<Movie>()
-    private var genreFromInternet = "fringe"
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
@@ -58,6 +60,7 @@ class ListMoviesFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentListMoviesBinding.inflate(inflater)
+
         return binding.root
     }
 
@@ -80,14 +83,16 @@ class ListMoviesFragment: Fragment() {
         // view model
         viewModel = ViewModelProvider(this).get(ListMoviesViewModel::class.java)
 
-        viewModel.getLiveDataComedy().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
-        viewModel.getLiveDataFantasy().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
-        viewModel.getLiveDataFavorites().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
+        viewModel.liveDataComedy.observe(viewLifecycleOwner) { t -> renderData(t) }
+        viewModel.liveDataFantasy.observe(viewLifecycleOwner) { t -> renderData(t) }
+        viewModel.liveDataFavorites.observe(viewLifecycleOwner) { t -> renderData(t) }
 
-        viewModel.getLiveDataFromInternetOkHttp().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
-        viewModel.getLiveDataFromInternetRetrofit().observe(viewLifecycleOwner) { t -> renderDataLocal(t) }
+        viewModel.liveDataFromInternetRetrofit1.observe(viewLifecycleOwner) { t -> renderData(t) }
+        viewModel.liveDataFromInternetRetrofit2.observe(viewLifecycleOwner) { t -> renderData(t) }
 
         //viewModel.sentRequest() // восстановить
+        //binding.switchAdult.isEnabled = PublicSettings.isAdult
+        changeColor()
     }
 
     private fun updateItemGenre(item: View, title:String, movies: List<Movie>){
@@ -102,7 +107,7 @@ class ListMoviesFragment: Fragment() {
         adapter.notifyDataSetChanged()
     }
 
-    private fun renderDataLocal(appState: AppState){
+    private fun renderData(appState: AppState){
 
         when(appState){
             is AppState.Error -> {
@@ -113,19 +118,21 @@ class ListMoviesFragment: Fragment() {
             }
 
             is AppState.SuccessComedy -> {
-                updateItemGenre(listItemsGenres[0],"LOCAL REPOSITORY",appState.movieList)
+                //updateItemGenre(listItemsGenres[0],appState.genre.title,appState.genre.list)
             }
             is AppState.SuccessFantasy -> {
-                //updateItemGenre(listItemsGenres[1],"FANTASY",appState.movieList)
+                //updateItemGenre(listItemsGenres[1],appState.genre.title,appState.genre.list)
             }
             is AppState.SuccessFavorites -> {
-                //updateItemGenre(listItemsGenres[2],"ANIMATED",appState.movieList)
+                //updateItemGenre(listItemsGenres[2],appState.genre.title,appState.genre.list)
             }
-            is AppState.SuccessFromInternetOkHttp -> {
-                updateItemGenre(listItemsGenres[1],"OkHTTP",moviesDTOinListMovies( appState.movieList ))
+
+            is AppState.SuccessFromInternetRetrofit1 -> {
+                updateItemGenre(listItemsGenres[0],PublicSettings.strings[0],moviesDTOinListMovies( appState.movieList ))
             }
-            is AppState.SuccessFromInternetRetrofit -> {
-                updateItemGenre(listItemsGenres[2],"RETROFIT",moviesDTOinListMovies( appState.movieList ))
+
+            is AppState.SuccessFromInternetRetrofit2 -> {
+                updateItemGenre(listItemsGenres[1],PublicSettings.strings[1],moviesDTOinListMovies( appState.movieList ))
             }
         }
 
@@ -135,7 +142,7 @@ class ListMoviesFragment: Fragment() {
         val moviesFromInternet = mutableListOf<Movie>()
 
         if(moviesDTO.results==null){
-            SimpleNotifications.printShort("Возможно вы исчерпали лимит")
+            PrintVisible.printShort("Возможно вы исчерпали лимит")
         }else{
             moviesDTO.results.forEach(){
                 val movie:Movie = Movie(it.title)
@@ -147,6 +154,11 @@ class ListMoviesFragment: Fragment() {
         return moviesFromInternet
     }
 
+    private fun changeColor(){
+        if(PublicSettings.isAdult){ binding.buttonAdult.setBackgroundColor(ContextCompat.getColor(MainActivity.activityApp,R.color.purple_200)) }
+        else                      { binding.buttonAdult.setBackgroundColor(ContextCompat.getColor(MainActivity.activityApp,R.color.purple_700)) }
+    }
+
     ///////// FUN TO BUTTONS ///////
     @RequiresApi(Build.VERSION_CODES.N)
     fun updateLocalData(){
@@ -155,11 +167,17 @@ class ListMoviesFragment: Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun updateRemoteData(){
-    }
+    fun updateRemoteData(){}
 
-    fun snackBarMenu(){
-        ListMoviesSnackBar.snackBarMenu(this)
+    fun snackBarMenu(){ ListMoviesSnackBar.snackBarMenu(this) }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun switchAdult(){
+        PublicSettings.switchAdult()
+        changeColor()
+
+        SharedPref.writeAdult()
+        updateLocalData()
     }
     ///////////////////////////////////
 

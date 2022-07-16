@@ -6,34 +6,34 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import java.android.cinema.activity.ReferenceMain
+import java.android.cinema.activity.MainActivity
 
 class LaunchRegisterReceiver {
 
     fun fromEverywhereLaunch(){
 
-        ReferenceMain.activityApp!!.  registerReceiver(object: BroadcastReceiver(){
+        MainActivity.activityApp.  registerReceiver(object: BroadcastReceiver(){
             override fun onReceive(p0: Context?, p1: Intent?) {
                 Log.d("@@@","onReceive ${Thread.currentThread()}")
             }
 
         }, IntentFilter("answer"))
 
-        ReferenceMain.activityApp!!. sendBroadcast(Intent().apply {
+        MainActivity.activityApp. sendBroadcast(Intent().apply {
             action = "myAction"
         })
     }
 
     fun localLaunch(){
 
-        LocalBroadcastManager.getInstance(  ReferenceMain.activityApp!!  ).registerReceiver(object: BroadcastReceiver(){
+        LocalBroadcastManager.getInstance(  MainActivity.activityApp  ).registerReceiver(object: BroadcastReceiver(){
             override fun onReceive(p0: Context?, p1: Intent?) {
                 Log.d("@@@","onReceive ${Thread.currentThread()}")
             }
 
         }, IntentFilter("answer"))
 
-        ReferenceMain.activityApp!!.  sendBroadcast(Intent().apply {
+        MainActivity.activityApp.  sendBroadcast(Intent().apply {
             action = "myAction"
         })
     }

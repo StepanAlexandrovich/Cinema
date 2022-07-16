@@ -4,7 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import java.android.cinema.activity.ReferenceMain
+import java.android.cinema.activity.MainActivity
 
 object WebViewDownloader {
 
@@ -16,7 +16,7 @@ object WebViewDownloader {
     }
 
     fun download2(url:String,webView: WebView){
-        ReferenceMain.activityMain?.myThread?.handler?.let {
+        MainActivity.activityMain.myThread.handler?.let {
             it.post{
                 Handler(Looper.getMainLooper()).post {
                     webView.settings.javaScriptEnabled = true
