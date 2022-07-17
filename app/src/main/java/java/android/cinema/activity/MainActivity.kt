@@ -6,8 +6,11 @@ import android.os.Bundle
 import java.android.cinema.*
 import java.android.cinema.phone.BroadCastReceiverAirPlaneMode
 import java.android.cinema.databinding.ActivityMainBinding
+import java.android.cinema.domen.Movies
 import java.android.cinema.storage.SharedPref
 import java.android.cinema.utils.PrintVisible
+import java.android.cinema.view.CustomDialogFragmentWithView
+import java.android.cinema.view.CustomDialogListener
 import java.android.cinema.view.mainscreen.ListMoviesFragment
 import java.android.cinema.view.utilsToView.Navigation
 
@@ -16,6 +19,7 @@ class MainActivity : AppCompatActivity(){
     companion object{
         lateinit var activityApp:AppCompatActivity
         lateinit var activityMain:MainActivity
+        val localMovies = Movies()
     }
 
     val myThread = MyThread()

@@ -33,6 +33,10 @@ class Movies {
         }
     }
 
+    fun getMovie(){
+
+    }
+
     fun addMovie(indexGenre:Int,movie: Movie){
         genres[indexGenre].addMovie(movie)
     }

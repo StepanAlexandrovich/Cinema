@@ -12,8 +12,19 @@ import androidx.fragment.app.Fragment
 import java.android.cinema.databinding.FragmentMovieBinding
 import java.android.cinema.domen.Movie
 import java.android.cinema.internet.WebViewDownloader
+import java.android.cinema.utils.PrintVisible
+import java.android.cinema.view.CustomDialogFragmentWithView
+import java.android.cinema.view.CustomDialogListener
 
 class MovieFragment: Fragment() {
+
+    companion object {
+        var currentMovie:Movie? = null
+        fun newInstance(movie: Movie): MovieFragment {
+            val fr = MovieFragment()
+            return fr
+        }
+    }
 
     lateinit var binding: FragmentMovieBinding
 
@@ -30,13 +41,14 @@ class MovieFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //downLoad() с колбэком
+        binding.buttonReview.setOnClickListener(View.OnClickListener {
+            createDialog(view)
+        })
 
-        val movie = arguments?.getParcelable<Movie>(BUNDLE_MOVIE_EXTRA)
-        if(movie!=null){ renderData(movie) }
+        renderData()
     }
 
-    private fun renderData(movie: Movie){
+    private fun renderData1(movie: Movie){
         binding.textViewTitle.text = movie.title
         binding.textViewDescription.text = movie.getDescription()
 
@@ -46,15 +58,31 @@ class MovieFragment: Fragment() {
 
     }
 
-    companion object {
-        const val BUNDLE_MOVIE_EXTRA = "sgrrdfge"
-        fun newInstance(movie: Movie): MovieFragment {
-            val bundle = Bundle()
-            bundle.putParcelable(BUNDLE_MOVIE_EXTRA,movie)
-            val fr = MovieFragment()
-            fr.arguments = bundle
-            return fr
+    private fun renderData(){
+        binding.textViewTitle.text = currentMovie!!.title
+        binding.textViewDescription.text = currentMovie!!.getDescription()
+
+        if(currentMovie!!.urlImage!=null){
+            WebViewDownloader.download(currentMovie!!.urlImage!!,binding.webViewImage)
         }
+
+    }
+
+    private val dialog = CustomDialogFragmentWithView();
+    private fun createDialog(view:View){
+
+        CustomDialogFragmentWithView.changeRating( currentMovie!!.rating )
+
+        dialog.setterListener( object : CustomDialogListener {
+            override fun onOk() {
+                currentMovie!!.changeRating(CustomDialogFragmentWithView.rating.toDouble())
+            }
+
+            override fun onNo() {}
+
+        })
+
+        dialog.show(requireActivity().supportFragmentManager,CustomDialogFragmentWithView.TAG)
     }
 
 }

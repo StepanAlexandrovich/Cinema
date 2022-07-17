@@ -78,6 +78,7 @@ class ListMoviesFragment: Fragment() {
             Navigation.createFragmentWithBackStack(requireActivity() as AppCompatActivity, R.id.container,
                 MovieFragment.newInstance(it)
             )
+            MovieFragment.currentMovie = it
         })
 
         // view model
@@ -118,21 +119,21 @@ class ListMoviesFragment: Fragment() {
             }
 
             is AppState.SuccessComedy -> {
-                //updateItemGenre(listItemsGenres[0],appState.genre.title,appState.genre.list)
+                updateItemGenre(listItemsGenres[0],appState.genre.title,appState.genre.list)
             }
             is AppState.SuccessFantasy -> {
-                //updateItemGenre(listItemsGenres[1],appState.genre.title,appState.genre.list)
+                updateItemGenre(listItemsGenres[1],appState.genre.title,appState.genre.list)
             }
             is AppState.SuccessFavorites -> {
-                //updateItemGenre(listItemsGenres[2],appState.genre.title,appState.genre.list)
+                updateItemGenre(listItemsGenres[2],appState.genre.title,appState.genre.list)
             }
 
             is AppState.SuccessFromInternetRetrofit1 -> {
-                updateItemGenre(listItemsGenres[0],PublicSettings.strings[0],moviesDTOinListMovies( appState.movieList ))
+                //updateItemGenre(listItemsGenres[0],PublicSettings.strings[0],moviesDTOinListMovies( appState.movieList ))
             }
 
             is AppState.SuccessFromInternetRetrofit2 -> {
-                updateItemGenre(listItemsGenres[1],PublicSettings.strings[1],moviesDTOinListMovies( appState.movieList ))
+                //updateItemGenre(listItemsGenres[1],PublicSettings.strings[1],moviesDTOinListMovies( appState.movieList ))
             }
         }
 

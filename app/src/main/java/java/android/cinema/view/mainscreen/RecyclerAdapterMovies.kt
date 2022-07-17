@@ -9,14 +9,13 @@ import java.android.cinema.PublicSettings
 import java.android.cinema.databinding.ItemMovieBinding
 import java.android.cinema.domen.Movie
 import java.android.cinema.internet.WebViewDownloader
+import java.android.cinema.view.details.MovieFragment
 
 class RecyclerAdapterMovies(private val onItemClick: OnItemClick): RecyclerView.Adapter<RecyclerAdapterMovies.ViewHolder>() {
 
     private var list:List<Movie> = emptyList()
 
-    fun setList(list: List<Movie>){
-        this.list = list
-    }
+    fun setList(list: List<Movie>){ this.list = list }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemMovieBinding.inflate(LayoutInflater.from(parent.context))
