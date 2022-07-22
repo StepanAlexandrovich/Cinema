@@ -1,28 +1,30 @@
-package java.android.cinema.a_take_away_out_proect
+package java.android.cinema.model.remote.okhttp
 
 import com.google.gson.Gson
 import okhttp3.*
+
 import java.android.cinema.BuildConfig
-import java.android.cinema.PublicSettings
-import java.android.cinema.model.LargeSuperCallback
-import java.android.cinema.model.RepositoryMoviesRemote
-import java.android.cinema.model.dto.MoviesDTO
+import java.android.cinema.model.MoviesCallback
+import java.android.cinema.model.RepositoryMovies
+
+import java.android.cinema.model.remote.dto.MoviesDTO
+import java.android.cinema.model.remote.dto.ConvertDTOinMovies
 import java.io.IOException
 
-class RepositoryMoviesRemoteOkHttpImpl: RepositoryMoviesRemote {
+class RepositoryMoviesRemoteOkHttpImpl: RepositoryMovies {
 
-    override fun getListMovies(indexGenre:Int, callback: LargeSuperCallback) {
+    override fun getListMovies(stringGenre: String, callback: MoviesCallback) {
         val client = OkHttpClient()
         val builder = Request.Builder()
 
-        builder.url("https://imdb-api.com/en/API/SearchMovie/${BuildConfig.API_KEY}/${PublicSettings.strings[indexGenre]}")
+        builder.url("https://imdb-api.com/en/API/SearchMovie/${BuildConfig.API_KEY}/${stringGenre}")
 
         val request: Request = builder.build()
         val cal: Call = client.newCall(request)
 
         cal.enqueue( object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                callback.onFailure(indexGenre,e)
+                callback.onFailure(e)
             }
 
             override fun onResponse(call: Call, response: Response) {
@@ -31,10 +33,10 @@ class RepositoryMoviesRemoteOkHttpImpl: RepositoryMoviesRemote {
                     response.body?.let {
                         val responseString = it.string()
                         val moviesDTO = Gson().fromJson(responseString, MoviesDTO::class.java)
-                        callback.onResponse(indexGenre, moviesDTO)
+                        callback.onResponse( ConvertDTOinMovies.returnList(moviesDTO))
                     }
                 }else{
-                    callback.onFailure(indexGenre,IOException("403 404"))
+                    callback.onFailure(IOException("403 404"))
                 }
             }
 

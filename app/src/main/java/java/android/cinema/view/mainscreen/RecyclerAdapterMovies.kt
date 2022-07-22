@@ -5,17 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import java.android.cinema.PublicSettings
+import java.android.cinema.activity.MainActivity
 
 import java.android.cinema.databinding.ItemMovieBinding
-import java.android.cinema.domen.Movie
 import java.android.cinema.internet.WebViewDownloader
-import java.android.cinema.view.details.MovieFragment
 
-class RecyclerAdapterMovies(private val onItemClick: OnItemClick): RecyclerView.Adapter<RecyclerAdapterMovies.ViewHolder>() {
+class RecyclerAdapterMovies(private val index:Int, private val onItemClick: OnItemClick): RecyclerView.Adapter<RecyclerAdapterMovies.ViewHolder>() {
 
-    private var list:List<Movie> = emptyList()
-
-    fun setList(list: List<Movie>){ this.list = list }
+    private val movies = MainActivity.localMovies.genres[index].list
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemMovieBinding.inflate(LayoutInflater.from(parent.context))
@@ -27,7 +24,7 @@ class RecyclerAdapterMovies(private val onItemClick: OnItemClick): RecyclerView.
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        return movies.size
     }
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
@@ -37,24 +34,24 @@ class RecyclerAdapterMovies(private val onItemClick: OnItemClick): RecyclerView.
             if(PublicSettings.isAdult){
                 openItem(binding,position)
             }else{
-                if(!list[position].adultBorder){ openItem(binding,position) }
+                if(!movies[position].adultBorder){ openItem(binding,position) }
                 else           { binding.textViewItem.text = "не рек до 18" }
             }
 
-            if(list[position].urlImage!=null){
-                WebViewDownloader.download2(list[position].urlImage!!,binding.imageView)
+            if(movies[position].urlImage!=null){
+                WebViewDownloader.download(movies[position].urlImage!!,binding.imageView)
             }
 
         }
 
         private fun openItem(binding:ItemMovieBinding,position:Int){
-            binding.textViewItem.text = list[position].title
+            binding.textViewItem.text = movies[position].title
+
             binding.root.setOnClickListener(View.OnClickListener {
-                onItemClick.onItemClick(list[position])
+                onItemClick.onItemClick(movies[position])
             })
         }
     }
-
 
 
 }

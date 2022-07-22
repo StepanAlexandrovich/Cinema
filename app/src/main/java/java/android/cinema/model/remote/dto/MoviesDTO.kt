@@ -1,4 +1,4 @@
-package java.android.cinema.model.dto
+package java.android.cinema.model.remote.dto
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

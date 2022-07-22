@@ -1,4 +1,4 @@
-package java.android.cinema.model
+package java.android.cinema.model.remote.retrofit
 
 import com.google.gson.GsonBuilder
 import retrofit2.Call
@@ -6,15 +6,15 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.android.cinema.BuildConfig
-import java.android.cinema.PublicSettings
-import java.android.cinema.model.dto.MoviesDTO
-import java.android.cinema.model.retrofit.MoviesAPI
+import java.android.cinema.model.MoviesCallback
+import java.android.cinema.model.remote.dto.ConvertDTOinMovies
+import java.android.cinema.model.RepositoryMovies
+import java.android.cinema.model.remote.dto.MoviesDTO
 import java.io.IOException
 
-class RepositoryMoviesRemoteRetrofitImpl: RepositoryMoviesRemote {
+class RepositoryMoviesRemoteRetrofitImpl: RepositoryMovies {
 
-    override fun getListMovies(indexGenre: Int, callback: LargeSuperCallback) {
+    override fun getListMovies(stringGenre:String, callback: MoviesCallback) {
         // асинхронный запрос
 
         val retrofitImpl = Retrofit.Builder()
@@ -23,16 +23,16 @@ class RepositoryMoviesRemoteRetrofitImpl: RepositoryMoviesRemote {
         val api = retrofitImpl.build().create(MoviesAPI::class.java)
 
         val key: String = "k_71rwtkzg"  //запаска
-        api.getMovies("/en/API/SearchMovie/${key}/${PublicSettings.strings[indexGenre]}").enqueue(object : Callback<MoviesDTO> {
+        api.getMovies("/en/API/SearchMovie/${key}/${stringGenre}").enqueue(object : Callback<MoviesDTO> {
             override fun onResponse(call: Call<MoviesDTO>, response: Response<MoviesDTO>) {
                 if(response.isSuccessful&&response.body()!=null){
-                    callback.onResponse(indexGenre, response.body()!!)
+                    callback.onResponse(ConvertDTOinMovies.returnList(response.body()!!))
                 }else {
-                    callback.onFailure(indexGenre,IOException("403 404")) // подработать
+                    callback.onFailure(IOException("403 404")) // подработать
                 }
             }
             override fun onFailure(call: Call<MoviesDTO>, t: Throwable) {
-                callback.onFailure(indexGenre,t as IOException) //костыль
+                callback.onFailure(t as IOException) //костыль
             }
         })
     }

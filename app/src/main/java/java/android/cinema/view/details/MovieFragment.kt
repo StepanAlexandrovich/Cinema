@@ -1,6 +1,7 @@
 package java.android.cinema.view.details
 
 
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,7 +17,11 @@ import java.android.cinema.utils.PrintVisible
 import java.android.cinema.view.CustomDialogFragmentWithView
 import java.android.cinema.view.CustomDialogListener
 
-class MovieFragment: Fragment() {
+import android.view.View.OnClickListener
+import java.android.cinema.MyApp
+import java.android.cinema.model.room.RoomUtils
+
+class MovieFragment: Fragment(),OnClickListener {
 
     companion object {
         var currentMovie:Movie? = null
@@ -41,21 +46,14 @@ class MovieFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.buttonReview.setOnClickListener(View.OnClickListener {
-            createDialog(view)
-        })
+        //binding.buttonReview.setOnClickListener(View.OnClickListener {
+            //createDialog(view)
+        //})
+
+        binding.buttonReview.setOnClickListener(this)
+        binding.buttonAddMovie.setOnClickListener(this)
 
         renderData()
-    }
-
-    private fun renderData1(movie: Movie){
-        binding.textViewTitle.text = movie.title
-        binding.textViewDescription.text = movie.getDescription()
-
-        if(movie.urlImage!=null){
-            WebViewDownloader.download(movie.urlImage!!,binding.webViewImage)
-        }
-
     }
 
     private fun renderData(){
@@ -83,6 +81,18 @@ class MovieFragment: Fragment() {
         })
 
         dialog.show(requireActivity().supportFragmentManager,CustomDialogFragmentWithView.TAG)
+    }
+
+    override fun onClick(p0: View?) {
+
+        when (p0?.getId()) {
+            binding.buttonReview.id     -> { createDialog(p0)  }
+            binding.buttonAddMovie.id   -> { RoomUtils.addMovie(currentMovie!!)
+                //Thread{
+                    //MyApp.getMovieDatabase().movieDao().insertRoom( RoomUtils.convertMovieToEntity( currentMovie!! ))
+                //}.start()
+            }
+        }
     }
 
 }

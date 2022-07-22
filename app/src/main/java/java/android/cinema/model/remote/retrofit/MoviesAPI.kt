@@ -1,9 +1,9 @@
-package java.android.cinema.model.retrofit
+package java.android.cinema.model.remote.retrofit
 
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Url
-import java.android.cinema.model.dto.MoviesDTO
+import java.android.cinema.model.remote.dto.MoviesDTO
 
 interface MoviesAPI {
 

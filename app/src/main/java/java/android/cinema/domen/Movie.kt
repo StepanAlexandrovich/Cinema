@@ -10,7 +10,7 @@ class Movie(val title: String):Parcelable{
     private var rating1:String? = null
     var rating:Double = 5.0
     var adultBorder = RandomCin.nextBoolean()
-    var urlImage:String? = null
+    var urlImage:String = "default"
 
     fun setDescription(rating:Int,duration:Int){
         this.rating1 =  "$rating stars"

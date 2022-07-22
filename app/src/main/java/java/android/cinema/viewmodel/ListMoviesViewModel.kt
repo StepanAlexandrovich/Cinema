@@ -1,57 +1,76 @@
 package java.android.cinema.viewmodel
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import java.android.cinema.model.LargeSuperCallback
-import java.android.cinema.model.RepositoryMoviesLocalImpl
-import java.android.cinema.model.RepositoryMoviesRemoteRetrofitImpl
-import java.android.cinema.model.dto.MoviesDTO
+import java.android.cinema.PublicSettings
+import java.android.cinema.domen.Movie
+import java.android.cinema.model.MoviesCallback
+import java.android.cinema.model.RepositoryMovies
+import java.android.cinema.model.remote.okhttp.RepositoryMoviesRemoteOkHttpImpl
+import java.android.cinema.model.remote.retrofit.RepositoryMoviesRemoteRetrofitImpl
+import java.android.cinema.model.room.RepositoryMoviesLocalRoomImpl
 import java.io.IOException
 
 class ListMoviesViewModel():ViewModel() {
-    private var repositoryMoviesLocal = RepositoryMoviesLocalImpl()
 
-    private var repositoryMoviesRemoteRetrofit = RepositoryMoviesRemoteRetrofitImpl()
+    private var repository: RepositoryMovies? = null
 
-    val liveDataComedy = MutableLiveData<AppState>()
-    val liveDataFantasy = MutableLiveData<AppState>()
-    val liveDataFavorites = MutableLiveData<AppState>()
+    private fun choiceRepository() {
+        when(PublicSettings.mode){
 
-    val liveDataFromInternetRetrofit1 = MutableLiveData<AppState>()
-    val liveDataFromInternetRetrofit2 = MutableLiveData<AppState>()
+            //PublicSettings.modeDataBase -> { repository = RepositoryMoviesDataBaseImpl() }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+            PublicSettings.modeDataBase -> { repository = RepositoryMoviesLocalRoomImpl() }
+
+            PublicSettings.modeOkHttp   -> { repository = RepositoryMoviesRemoteOkHttpImpl() }
+
+            PublicSettings.modeRetrofit -> { repository = RepositoryMoviesRemoteRetrofitImpl() }
+
+        }
+    }
+
+    val liveDates = mutableListOf< MutableLiveData<AppState> >()
+
+    fun liveDatesInit(times:Int){
+        repeat(times){
+            liveDates.add( MutableLiveData<AppState>() )
+        }
+    }
+
     fun sentRequest(){
-        var indexLocal = 0;
-        liveDataComedy.postValue( AppState.SuccessComedy(repositoryMoviesLocal.getGenre(indexLocal++)) )
-        liveDataFantasy.postValue( AppState.SuccessFantasy(repositoryMoviesLocal.getGenre(indexLocal++)) )
-        liveDataFavorites.postValue( AppState.SuccessFavorites(repositoryMoviesLocal.getGenre(indexLocal++)) )
+        choiceRepository()
 
-        var indexRemote = 0;
-        repositoryMoviesRemoteRetrofit.getListMovies(indexRemote++,callbackRetrofit);
-        repositoryMoviesRemoteRetrofit.getListMovies(indexRemote++,callbackRetrofit);
-    }
-
-    private val callbackRetrofit = object : LargeSuperCallback{
-        override fun onResponse(indexGenre:Int,moviesDTO: MoviesDTO) {
-            funOnOnResponse(indexGenre,moviesDTO)
-        }
-
-        override fun onFailure(indexGenre:Int,e: IOException) {
-            funOnOnFailure(indexGenre,e)
+        repeat(PublicSettings.mode!!.strings.size){
+            repository?.getListMovies(PublicSettings.mode!!.strings[it],MoviesCallbackImpl(it));
         }
     }
 
-    private var funOnOnResponse = fun(indexGenre:Int, moviesDTO:MoviesDTO){
-        if(indexGenre==0){ liveDataFromInternetRetrofit1.postValue( AppState.SuccessFromInternetRetrofit1(moviesDTO) ) }
-        if(indexGenre==1){ liveDataFromInternetRetrofit2.postValue( AppState.SuccessFromInternetRetrofit2(moviesDTO) ) }
+    inner class MoviesCallbackImpl(private val index: Int): MoviesCallback {
+        override fun onResponse(movies: MutableList<Movie>) {
+            funOnOnResponse(index,movies)
+        }
+
+        override fun onFailure(exception: IOException) {
+            funOnOnFailure(index,exception)
+        }
+
     }
 
-    private var funOnOnFailure = fun(indexGenre:Int,e: IOException){
-        if(indexGenre==0){ liveDataFromInternetRetrofit1.postValue( AppState.Error(e) ) }
-        if(indexGenre==1){ liveDataFromInternetRetrofit2.postValue( AppState.Error(e) ) }
+    private var funOnOnResponse = fun(index:Int, movies: MutableList<Movie>){
+        // будет только одна строчка
+
+        if(index==0){ liveDates[index].postValue( AppState.SuccessData0(movies) ) }
+        if(index==1){ liveDates[index].postValue( AppState.SuccessData1(movies) ) }
+        if(index==2){ liveDates[index].postValue( AppState.SuccessData2(movies) ) }
+        if(index==3){ liveDates[index].postValue( AppState.SuccessData3(movies) ) }
+        if(index==4){ liveDates[index].postValue( AppState.SuccessData4(movies) ) }
+        if(index==5){ liveDates[index].postValue( AppState.SuccessData5(movies) ) }
     }
+
+    private var funOnOnFailure = fun(index:Int,e: IOException){
+        liveDates[index].postValue( AppState.Error(e) )
+    }
+
+
 
 }

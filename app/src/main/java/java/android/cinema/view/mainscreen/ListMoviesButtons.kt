@@ -11,8 +11,10 @@ import java.android.cinema.utils.PrintVisible
 class ListMoviesButtons(private val binding: FragmentListMoviesBinding, private val listMoviesFragment: ListMoviesFragment): OnClickListener{
 
     init {
-        binding.buttonUpdateLocalData.setOnClickListener(this)
-        //binding.buttonUpdateRemoteData.setOnClickListener(this)
+        binding.buttonFromDataBase.setOnClickListener(this)
+        binding.buttonFromOkhttp.setOnClickListener(this)
+        binding.buttonFromRetrofit.setOnClickListener(this)
+
         binding.buttonSnackBarMenu.setOnClickListener(this)
         binding.buttonAdult.setOnClickListener(this)
     }
@@ -20,10 +22,12 @@ class ListMoviesButtons(private val binding: FragmentListMoviesBinding, private 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onClick(p0: View?) {
         when (p0?.getId()) {
-            binding.buttonUpdateLocalData.id     -> { listMoviesFragment.updateLocalData()  }
-            //binding.buttonUpdateRemoteData.id  -> { listMoviesFragment.updateRemoteData() }
-            binding.buttonSnackBarMenu.id        -> { listMoviesFragment.snackBarMenu()     }
-            binding.buttonAdult.id               -> { listMoviesFragment.switchAdult()      }
+            binding.buttonFromDataBase.id     -> { listMoviesFragment.fromDataBase()  }
+            binding.buttonFromOkhttp.id       -> { listMoviesFragment.fromOkHttp() }
+            binding.buttonFromRetrofit.id     -> { listMoviesFragment.fromRetrofit() }
+
+            binding.buttonSnackBarMenu.id     -> { listMoviesFragment.snackBarMenu()     }
+            binding.buttonAdult.id            -> { listMoviesFragment.switchAdult()      }
         }
     }
 }

@@ -1,44 +1,44 @@
 package java.android.cinema.domen
 
 class Movies {
-    val genres = mutableListOf<Genre>()
+    var genres = mutableListOf<Genre>()
+    var genre:Genre = Genre("default")
 
-    init{
-        var genre:Genre? = null
-
-            genre = Genre("comedy")
-        genre.addMovie(Movie("Тупой и ещё тупее"))
-        genre.addMovie(Movie("Джентельмены удачи"))
-        genre.addMovie(Movie("В джазе только девушки"))
-        genre.addMovie(Movie("Папаши"))
-        genre.addMovie(Movie("Пушки, деньги, два ствола"))
-        genres.add(genre)
-
-            genre = Genre("fantasy")
-        genre.addMovie(Movie("День сурка"))
-        genre.addMovie(Movie("Солярис"))
-        genres.add(genre)
-
-            genre = Genre("animated")
-        genre.addMovie(Movie("Ну погоди"))
-        genre.addMovie(Movie("Тои и Джери"))
-        genres.add(genre)
-    }
-
-    inner class Genre(val title:String){
-        val list = mutableListOf<Movie>()
+    class Genre(val title:String){
+        var list = mutableListOf<Movie>()
 
         fun addMovie(movie: Movie){
             list.add(movie)
         }
     }
 
-    fun getMovie(){
-
+    fun addGenreWithMovies(nameGenre:String, movies: MutableList<Movie>){
+        val genre = Genre(nameGenre)
+        genre.list = movies
+        genres.add(genre)
     }
 
-    fun addMovie(indexGenre:Int,movie: Movie){
-        genres[indexGenre].addMovie(movie)
+    fun setGenreWithMovies(indexGenre:Int, nameGenre:String, movies: MutableList<Movie>){
+        val genre = Genre(nameGenre)
+        genre.list = movies
+        genres[indexGenre] = genre
+    }
+
+    fun resetAll(){
+        genres = mutableListOf<Genre>()
+        repeat(6){
+            addGenre("default")
+        }
+    }
+
+
+    fun addGenre(name:String){
+        genre = Genre(name)
+        genres.add(genre)
+    }
+
+    fun addMovie(movie: Movie){
+        genre.addMovie(movie)
     }
 
 }

@@ -3,7 +3,7 @@ package java.android.cinema
 import android.os.Handler
 import android.os.Looper
 
-class MyThread: Thread() {
+class InfiniteThread: Thread() {
     var handler: Handler? = null
 
     override fun run(){

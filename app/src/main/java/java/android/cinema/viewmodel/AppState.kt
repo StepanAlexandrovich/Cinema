@@ -1,16 +1,18 @@
 package java.android.cinema.viewmodel
 
-import java.android.cinema.domen.Movies
-import java.android.cinema.model.dto.MoviesDTO
+import java.android.cinema.domen.Movie
 
 sealed class AppState {
-    data class SuccessComedy(val genre: Movies.Genre) : AppState()
-    data class SuccessFantasy(val genre: Movies.Genre) : AppState()
-    data class SuccessFavorites(val genre: Movies.Genre) : AppState()
 
-    data class SuccessFromInternetRetrofit1(val movieList: MoviesDTO) : AppState()
-    data class SuccessFromInternetRetrofit2(val movieList: MoviesDTO) : AppState()
+    // сделаю массив
+    data class SuccessData0(val movies: MutableList<Movie>) : AppState()
+    data class SuccessData1(val movies: MutableList<Movie>) : AppState()
+    data class SuccessData2(val movies: MutableList<Movie>) : AppState()
+    data class SuccessData3(val movies: MutableList<Movie>) : AppState()
+    data class SuccessData4(val movies: MutableList<Movie>) : AppState()
+    data class SuccessData5(val movies: MutableList<Movie>) : AppState()
 
     data class Error(val error: Throwable) : AppState()
     object Loading : AppState()
+
 }
