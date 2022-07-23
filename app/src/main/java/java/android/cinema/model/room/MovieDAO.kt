@@ -7,12 +7,11 @@ import androidx.room.Query
 
 @Dao
 interface MovieDAO {
-    @Insert(onConflict = OnConflictStrategy.REPLACE) // FIXME создать конфликт
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertRoom(movieEntity: MovieEntity)
 
     @Query("SELECT * FROM movie_entity_table")
     fun getMovieAll():List<MovieEntity>
-
 
 
 
@@ -23,6 +22,7 @@ interface MovieDAO {
     @Query("INSERT INTO movie_entity_table (id,name) VALUES(:id,:name)")
     fun insertNative2(id:Long,name:String)
 
-    //@Query("SELECT * FROM weather_entity_table WHERE lat=:mLat AND lon=:mLon")
-    //fun getMovieByLocation(mLat:Double,mLon:Double):List<MovieEntity>
+    @Query("SELECT * FROM movie_entity_table WHERE name=:title")
+    fun getMovieByLocation(title:String):List<MovieEntity>
+
 }

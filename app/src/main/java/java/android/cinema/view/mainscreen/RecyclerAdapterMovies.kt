@@ -4,11 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import java.android.cinema.PublicSettings
 import java.android.cinema.activity.MainActivity
-
 import java.android.cinema.databinding.ItemMovieBinding
-import java.android.cinema.internet.WebViewDownloader
 
 class RecyclerAdapterMovies(private val index:Int, private val onItemClick: OnItemClick): RecyclerView.Adapter<RecyclerAdapterMovies.ViewHolder>() {
 
@@ -39,7 +38,7 @@ class RecyclerAdapterMovies(private val index:Int, private val onItemClick: OnIt
             }
 
             if(movies[position].urlImage!=null){
-                WebViewDownloader.download(movies[position].urlImage!!,binding.imageView)
+                Picasso.get().load(movies[position].urlImage!!).into(binding.imageView)
             }
 
         }

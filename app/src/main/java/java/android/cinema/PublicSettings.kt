@@ -10,6 +10,7 @@ object PublicSettings {
 
     //val modeDataBase = Mode(listOf("comedy", "fantasy")) // раскоментирую
 
+    val modeTest = Mode(listOf("comedy","fantasy","1","2"))
     val modeDataBase = Mode(listOf("room"))
     val modeOkHttp = Mode(listOf("inception 2010","fringe"))
     val modeRetrofit = Mode(listOf("The Leftovers 2014","lost 2004","inception 2010","fringe"))

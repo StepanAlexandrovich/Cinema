@@ -18,6 +18,7 @@ import java.android.cinema.view.CustomDialogFragmentWithView
 import java.android.cinema.view.CustomDialogListener
 
 import android.view.View.OnClickListener
+import com.squareup.picasso.Picasso
 import java.android.cinema.MyApp
 import java.android.cinema.model.room.RoomUtils
 
@@ -46,10 +47,6 @@ class MovieFragment: Fragment(),OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //binding.buttonReview.setOnClickListener(View.OnClickListener {
-            //createDialog(view)
-        //})
-
         binding.buttonReview.setOnClickListener(this)
         binding.buttonAddMovie.setOnClickListener(this)
 
@@ -61,7 +58,7 @@ class MovieFragment: Fragment(),OnClickListener {
         binding.textViewDescription.text = currentMovie!!.getDescription()
 
         if(currentMovie!!.urlImage!=null){
-            WebViewDownloader.download(currentMovie!!.urlImage!!,binding.webViewImage)
+            Picasso.get().load(currentMovie!!.urlImage).into(binding.imageViewDetails)
         }
 
     }
@@ -87,11 +84,7 @@ class MovieFragment: Fragment(),OnClickListener {
 
         when (p0?.getId()) {
             binding.buttonReview.id     -> { createDialog(p0)  }
-            binding.buttonAddMovie.id   -> { RoomUtils.addMovie(currentMovie!!)
-                //Thread{
-                    //MyApp.getMovieDatabase().movieDao().insertRoom( RoomUtils.convertMovieToEntity( currentMovie!! ))
-                //}.start()
-            }
+            binding.buttonAddMovie.id   -> { RoomUtils.addMovie(currentMovie!!) }
         }
     }
 

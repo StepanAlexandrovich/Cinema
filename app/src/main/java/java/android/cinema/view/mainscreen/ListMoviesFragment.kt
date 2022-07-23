@@ -81,12 +81,7 @@ class ListMoviesFragment: Fragment() {
 
         // view model
         viewModel = ViewModelProvider(this).get(ListMoviesViewModel::class.java)
-        viewModel.liveDatesInit(6)
-
-        viewModel.liveDates.forEach(){
-            it.observe(viewLifecycleOwner){ t -> renderData(t) }
-        }
-
+        viewModel.liveData.observe(viewLifecycleOwner) { renderData(it) }
         changeColor()
     }
 
@@ -104,7 +99,6 @@ class ListMoviesFragment: Fragment() {
     }
 
     private fun renderData(appState: AppState){
-
         when(appState){
             is AppState.Error -> {
                 //.......
@@ -113,21 +107,10 @@ class ListMoviesFragment: Fragment() {
                 //........
             }
 
-            // сделаю цикл
-            is AppState.SuccessData0 -> {
-                movies.setGenreWithMovies(0, PublicSettings.mode!!.strings[0],appState.movies)
-            }
-
-            is AppState.SuccessData1 -> {
-                movies.setGenreWithMovies(1, PublicSettings.mode!!.strings[1],appState.movies)
-            }
-
-            is AppState.SuccessData2 -> {
-                movies.setGenreWithMovies(2, PublicSettings.mode!!.strings[2],appState.movies)
-            }
-
-            is AppState.SuccessData3 -> {
-                movies.setGenreWithMovies(3, PublicSettings.mode!!.strings[3],appState.movies)
+            is AppState.SuccessData -> {
+                synchronized(movies){
+                    movies.setGenreWithMovies(appState.index, PublicSettings.mode!!.strings[appState.index],appState.movies)
+                }
             }
         }
 
@@ -145,6 +128,11 @@ class ListMoviesFragment: Fragment() {
     }
 
     ///////// FUN TO BUTTONS ///////
+    fun fromTest(){
+        PublicSettings.mode = PublicSettings.modeTest
+        update()
+    }
+
     fun fromDataBase(){
         PublicSettings.mode = PublicSettings.modeDataBase
         update()

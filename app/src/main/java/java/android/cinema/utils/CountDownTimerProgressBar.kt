@@ -1,22 +1,22 @@
 package java.android.cinema.utils
 
 import android.os.CountDownTimer
+import android.widget.ProgressBar
 
-class CountDownTimerProgressBar {
+object CountDownTimerProgressBar {
 
-    // подключить с колбэком
-    fun downLoad(){
-        //val progressBar = binding.progressBar
+    fun downLoad(progressBar: ProgressBar){
 
         object : CountDownTimer(10000,500){
             override fun onTick(p0: Long) {
-                //if(progressBar.progress < progressBar.max){
-                    //progressBar.progress += 10
-                //}
+                if(progressBar.progress < progressBar.max){
+                    progressBar.progress += 10
+                }
             }
 
             override fun onFinish() { }
 
         }.start()
     }
+
 }

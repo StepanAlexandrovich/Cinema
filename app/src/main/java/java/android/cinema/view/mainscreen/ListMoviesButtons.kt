@@ -14,6 +14,7 @@ class ListMoviesButtons(private val binding: FragmentListMoviesBinding, private 
         binding.buttonFromDataBase.setOnClickListener(this)
         binding.buttonFromOkhttp.setOnClickListener(this)
         binding.buttonFromRetrofit.setOnClickListener(this)
+        binding.buttonTest.setOnClickListener(this)
 
         binding.buttonSnackBarMenu.setOnClickListener(this)
         binding.buttonAdult.setOnClickListener(this)
@@ -25,6 +26,7 @@ class ListMoviesButtons(private val binding: FragmentListMoviesBinding, private 
             binding.buttonFromDataBase.id     -> { listMoviesFragment.fromDataBase()  }
             binding.buttonFromOkhttp.id       -> { listMoviesFragment.fromOkHttp() }
             binding.buttonFromRetrofit.id     -> { listMoviesFragment.fromRetrofit() }
+            binding.buttonTest.id             -> { listMoviesFragment.fromTest() }
 
             binding.buttonSnackBarMenu.id     -> { listMoviesFragment.snackBarMenu()     }
             binding.buttonAdult.id            -> { listMoviesFragment.switchAdult()      }
