@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="radius_card_view">56</dimen>
+    <dimen name="margin_card_view">12</dimen>
+    <dimen name="width_image_movie">130</dimen>
+    <dimen name="height_image_movie">130</dimen>
+    <dimen name="small">16dp</dimen>
+    <dimen name="text_size_average">16dp</dimen>
+</resources>
