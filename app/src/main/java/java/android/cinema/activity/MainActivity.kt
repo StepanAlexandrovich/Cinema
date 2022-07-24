@@ -2,6 +2,7 @@ package java.android.cinema.activity
 
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -46,8 +47,6 @@ class MainActivity : AppCompatActivity(){
         SharedPref.read()
 
         notificationAirplaneMode()
-
-
     }
 
     private fun notificationAirplaneMode(){

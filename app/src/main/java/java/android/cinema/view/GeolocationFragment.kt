@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.*
+
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,12 +17,12 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import java.android.cinema.databinding.FragmentGeolocationBinding
 import java.android.cinema.utils.PrintVisible
-import java.util.*
-import kotlin.system.measureTimeMillis
+import java.io.IOException
+
 
 class GeolocationFragment: Fragment(){
 
-    lateinit var locationManager:LocationManager
+    lateinit var locationManager: LocationManager
 
     private var _binding: FragmentGeolocationBinding? = null
     val binding: FragmentGeolocationBinding get() { return _binding!! }
@@ -39,7 +40,10 @@ class GeolocationFragment: Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        binding.button.setOnClickListener(View.OnClickListener {
+            checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        })
+
     }
 
     override fun onDestroy() {
@@ -50,7 +54,6 @@ class GeolocationFragment: Fragment(){
     ////////////////////////////////////////////////////////////////
 
     private fun getLocation() {
-
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -60,19 +63,11 @@ class GeolocationFragment: Fragment(){
             locationManager =
                 requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                val provider = locationManager.getProvider(LocationManager.GPS_PROVIDER)
 
                 locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    0L,
-                    2000F,
-
-                    object :LocationListener{
-                        override fun onLocationChanged(p0: Location) {
-                            PrintVisible.printLongThread("${p0.latitude}_${p0.longitude}")
-                        }
-
-                    }
+                    2000L,
+                    0F, locationListener
                 )
 
                 // FIXME получить один раз координаты
@@ -103,6 +98,40 @@ class GeolocationFragment: Fragment(){
         } else {
             permissionRequest(permission)
         }
+
+    }
+
+    private val locationListener = object : LocationListener {
+        override fun onLocationChanged(location: Location) {
+            //PrintVisible.printLong("${location.latitude} ${location.longitude}")
+            getAddress(location)
+
+        }
+
+        override fun onProviderDisabled(provider: String) {
+            PrintVisible.printShort("onProviderDisabled")
+            super.onProviderDisabled(provider)
+        }
+
+        override fun onProviderEnabled(provider: String) {
+            PrintVisible.printShort("onProviderEnabled")
+            super.onProviderEnabled(provider)
+        }
+    }
+
+    fun getAddress(location: Location) {
+        val geocoder = Geocoder(context)
+
+        try {
+            PrintVisible.printShort("${location.latitude} ${location.longitude}")
+            geocoder.getFromLocation(location.latitude, location.longitude, 1)
+        }catch (e: IOException){
+            PrintVisible.printShort("${e.toString()}")
+            e.printStackTrace()
+
+        }
+
+        locationManager.removeUpdates(locationListener)
 
     }
 
