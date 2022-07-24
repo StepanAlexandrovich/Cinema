@@ -12,6 +12,7 @@ import java.android.cinema.phone.BroadCastReceiverAirPlaneMode
 import java.android.cinema.storage.SharedPref
 import java.android.cinema.utils.PrintVisible
 import java.android.cinema.view.ContentProviderFragment
+import java.android.cinema.view.GeolocationFragment
 import java.android.cinema.view.mainscreen.ListMoviesFragment
 import java.android.cinema.view.utilsToView.Navigation
 
@@ -67,6 +68,10 @@ class MainActivity : AppCompatActivity(){
             }
             R.id.menu_main_screen -> {
                 Navigation.createFragment(this, R.id.container, ListMoviesFragment.newInstance())
+                true
+            }
+            R.id.menu_geolocation -> {
+                Navigation.createFragment(this, R.id.container, GeolocationFragment())
                 true
             }
             else -> super.onOptionsItemSelected(item)
