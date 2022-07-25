@@ -3,6 +3,8 @@ package java.android.cinema.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import java.android.cinema.PublicSettings
+import java.android.cinema.activity.MainActivity
+import java.android.cinema.activity.MyApp
 import java.android.cinema.domen.Movie
 import java.android.cinema.model.MoviesCallback
 import java.android.cinema.model.RepositoryMovies
@@ -14,19 +16,30 @@ import java.io.IOException
 
 class ListMoviesViewModel():ViewModel() {
 
-    val liveData =  MutableLiveData<AppState>()
+    val liveData =  MutableLiveData<AppState>() // постараюсь вернуть
+
+    val liveDates = createLiveDates()
+
+    private fun createLiveDates(): MutableList< MutableLiveData<AppState> > {
+        val liveDates = mutableListOf< MutableLiveData<AppState> >()
+        repeat(MainActivity.localMovies.genres.size){
+            liveDates.add(MutableLiveData<AppState>())
+        }
+        return liveDates
+    }
+
     private var repository: RepositoryMovies? = null
 
     private fun choiceRepository() {
         when(PublicSettings.mode){
 
-            PublicSettings.modeTest -> { repository = RepositoryMoviesTestImpl() }
+            PublicSettings.modeTest -> { repository = MyApp.repositoryTest }
 
-            PublicSettings.modeDataBase -> { repository = RepositoryMoviesLocalRoomImpl() }
+            PublicSettings.modeDataBase -> { repository = MyApp.repositoryRoom }
 
-            PublicSettings.modeOkHttp   -> { repository = RepositoryMoviesRemoteOkHttpImpl() }
+            PublicSettings.modeOkHttp   -> { repository = MyApp.repositoryOkHttp }
 
-            PublicSettings.modeRetrofit -> { repository = RepositoryMoviesRemoteRetrofitImpl() }
+            PublicSettings.modeRetrofit -> { repository = MyApp.repositoryRetrofit }
 
         }
     }
@@ -41,24 +54,14 @@ class ListMoviesViewModel():ViewModel() {
 
     inner class MoviesCallbackImpl(private val index: Int): MoviesCallback {
         override fun onResponse(movies: MutableList<Movie>) {
-            funOnOnResponse(index,movies)
+            liveDates[index].postValue( AppState.SuccessData(index,movies) )
         }
 
         override fun onFailure(exception: IOException) {
-            funOnOnFailure(index,exception)
+            liveData.postValue( AppState.Error(exception) )
+            // подумать как то использовать индекс
         }
 
     }
-
-    private var funOnOnResponse = fun(index:Int, movies: MutableList<Movie>){
-        liveData.postValue( AppState.SuccessData(index,movies) )
-    }
-
-    private var funOnOnFailure = fun(index:Int,e: IOException){
-        // обработать индекс
-        liveData.postValue( AppState.Error(e) )
-    }
-
-
 
 }

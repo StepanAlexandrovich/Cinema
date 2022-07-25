@@ -1,17 +1,19 @@
 package java.android.cinema.model.room
 
-import java.android.cinema.MyApp
 import java.android.cinema.domen.Movie
 import java.android.cinema.model.MoviesCallback
 import java.android.cinema.model.RepositoryMovies
 
 class RepositoryMoviesLocalRoomImpl:RepositoryMovies {
     override fun getListMovies(stringGenre: String, callback: MoviesCallback) {
-
-        // добавить реализацию для поля stringGenge
+        var movies:MutableList<Movie> = mutableListOf<Movie>()
 
         Thread{
-            val movies = RoomUtils.convertListDaoInMovies(MyApp.getMovieDatabase().movieDao().getMovieAll())
+            when(stringGenre){
+                "comedy"    -> { movies = RoomUtils.convertListDaoInMovies(RoomUtils.getMovieDataBase(0).movieDao().getMovieAll()) }
+                "fantasy"   -> { movies = RoomUtils.convertListDaoInMovies(RoomUtils.getMovieDataBase(1).movieDao().getMovieAll()) }
+                "animation" -> { movies = RoomUtils.convertListDaoInMovies(RoomUtils.getMovieDataBase(2).movieDao().getMovieAll()) }
+            }
             callback.onResponse(movies)
         }.start()
 

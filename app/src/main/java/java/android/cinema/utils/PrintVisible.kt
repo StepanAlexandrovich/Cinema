@@ -3,8 +3,7 @@ package java.android.cinema.utils
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
-import java.android.cinema.MyApp
-import java.android.cinema.activity.MainActivity
+import java.android.cinema.activity.MyApp
 
 object PrintVisible {
 
@@ -13,6 +12,14 @@ object PrintVisible {
     }
 
     fun printLongThread(text:String){
+        Thread{
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(MyApp.getMyApp(),text, Toast.LENGTH_LONG).show()
+            }
+        }.start()
+    }
+
+    fun printShortThread(text:String){
         Thread{
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(MyApp.getMyApp(),text, Toast.LENGTH_LONG).show()

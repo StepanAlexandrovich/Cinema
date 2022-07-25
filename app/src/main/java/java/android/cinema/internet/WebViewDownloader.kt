@@ -4,7 +4,6 @@ import android.os.Handler
 import android.os.Looper
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import java.android.cinema.MyApp
 import java.android.cinema.activity.MainActivity
 
 object WebViewDownloader {

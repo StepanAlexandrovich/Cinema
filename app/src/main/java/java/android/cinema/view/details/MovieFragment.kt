@@ -1,7 +1,6 @@
 package java.android.cinema.view.details
 
 
-import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,14 +11,11 @@ import androidx.fragment.app.Fragment
 
 import java.android.cinema.databinding.FragmentMovieBinding
 import java.android.cinema.domen.Movie
-import java.android.cinema.internet.WebViewDownloader
-import java.android.cinema.utils.PrintVisible
 import java.android.cinema.view.CustomDialogFragmentWithView
 import java.android.cinema.view.CustomDialogListener
 
 import android.view.View.OnClickListener
 import com.squareup.picasso.Picasso
-import java.android.cinema.MyApp
 import java.android.cinema.model.room.RoomUtils
 
 class MovieFragment: Fragment(),OnClickListener {
@@ -27,8 +23,7 @@ class MovieFragment: Fragment(),OnClickListener {
     companion object {
         var currentMovie:Movie? = null
         fun newInstance(movie: Movie): MovieFragment {
-            val fr = MovieFragment()
-            return fr
+            return MovieFragment()
         }
     }
 
@@ -48,7 +43,9 @@ class MovieFragment: Fragment(),OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonReview.setOnClickListener(this)
-        binding.buttonAddMovie.setOnClickListener(this)
+        binding.buttonAddToComedy.setOnClickListener(this)
+        binding.buttonAddToFantasy.setOnClickListener(this)
+        binding.buttonAddToAnimation.setOnClickListener(this)
 
         renderData()
     }
@@ -74,7 +71,6 @@ class MovieFragment: Fragment(),OnClickListener {
             }
 
             override fun onNo() {}
-
         })
 
         dialog.show(requireActivity().supportFragmentManager,CustomDialogFragmentWithView.TAG)
@@ -84,7 +80,9 @@ class MovieFragment: Fragment(),OnClickListener {
 
         when (p0?.getId()) {
             binding.buttonReview.id     -> { createDialog(p0)  }
-            binding.buttonAddMovie.id   -> { RoomUtils.addMovie(currentMovie!!) }
+            binding.buttonAddToComedy.id   -> { RoomUtils.addMovie(0,currentMovie!!) }
+            binding.buttonAddToFantasy.id   -> { RoomUtils.addMovie(1,currentMovie!!) }
+            binding.buttonAddToAnimation.id   -> { RoomUtils.addMovie(2,currentMovie!!) }
         }
     }
 

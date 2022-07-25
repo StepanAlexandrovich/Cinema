@@ -1,9 +1,8 @@
-package java.android.cinema.view
+package java.android.cinema.extra.phone_numbers
 
 import android.Manifest
 import android.content.ContentResolver
 import android.content.pm.PackageManager
-import android.content.pm.PathPermission
 import android.database.Cursor
 import android.os.Build
 import android.os.Bundle
@@ -16,7 +15,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import java.android.cinema.databinding.FragmentContentProviderBinding
-import java.android.cinema.utils.PrintVisible
 
 
 class ContentProviderFragment: Fragment(){
@@ -94,8 +92,6 @@ class ContentProviderFragment: Fragment(){
                 val number = getNumberFromID(contentResolver,contactId)
 
                 binding.containerForContacts.addView(TextView(requireContext()).apply {
-                    //text = name
-                    //text = "${contactId}"
                     text = "${name} - > ${number}"
                     textSize = 25f
                 })

@@ -22,7 +22,7 @@ import java.android.cinema.activity.MainActivity
 import java.android.cinema.databinding.FragmentListMoviesBinding
 
 import java.android.cinema.domen.Movie
-import java.android.cinema.storage.SharedPref
+import java.android.cinema.save_settings.SharedPref
 import java.android.cinema.view.utilsToView.Navigation
 import java.android.cinema.view.utilsToView.UtilsToRecycler
 import java.android.cinema.viewmodel.AppState
@@ -81,21 +81,13 @@ class ListMoviesFragment: Fragment() {
 
         // view model
         viewModel = ViewModelProvider(this).get(ListMoviesViewModel::class.java)
-        viewModel.liveData.observe(viewLifecycleOwner) { renderData(it) }
+        //viewModel.liveData.observe(viewLifecycleOwner) { renderData(it) }  // не надёжно пока
+
+        viewModel.liveDates.forEach(){
+            it.observe(viewLifecycleOwner) { renderData(it) }
+        }
+
         changeColor()
-    }
-
-    // СКРОЛЛИНГ ПЕРЕНЕСТИ В RECYCLE
-    private fun updateItemGenre(item: View, title:String, movies: List<Movie>){
-        item.findViewById<TextView>(R.id.textViewGenre).text = title
-
-        val rv:RecyclerView = item.findViewById<RecyclerView>(R.id.rv)
-        rv.layoutManager = UtilsToRecycler.createLayoutHorizontalManagerInversion(requireActivity() as AppCompatActivity)
-        val adapter = rv.adapter as RecyclerAdapterMovies
-        //adapter.setList(movies)
-
-        rv.smoothScrollToPosition(movies.size - 1)
-        adapter.notifyDataSetChanged()
     }
 
     private fun renderData(appState: AppState){

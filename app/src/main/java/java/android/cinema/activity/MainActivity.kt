@@ -2,18 +2,17 @@ package java.android.cinema.activity
 
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import java.android.cinema.*
 import java.android.cinema.databinding.ActivityMainBinding
 import java.android.cinema.domen.Movies
-import java.android.cinema.phone.BroadCastReceiverAirPlaneMode
-import java.android.cinema.storage.SharedPref
-import java.android.cinema.utils.PrintVisible
-import java.android.cinema.view.ContentProviderFragment
-import java.android.cinema.view.GeolocationFragment
+import java.android.cinema.extra.receiver.BroadCastReceiverAirPlaneMode
+import java.android.cinema.save_settings.SharedPref
+import java.android.cinema.extra.phone_numbers.ContentProviderFragment
+import java.android.cinema.extra.geolocation.GeolocationFragment
+import java.android.cinema.utils.InfiniteThread
 import java.android.cinema.view.mainscreen.ListMoviesFragment
 import java.android.cinema.view.utilsToView.Navigation
 

@@ -1,4 +1,4 @@
-package java.android.cinema.phone
+package java.android.cinema.extra.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context

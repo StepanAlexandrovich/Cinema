@@ -1,10 +1,12 @@
-package java.android.cinema.view
+package java.android.cinema.extra.geolocation
 
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.*
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 
 import android.os.Build
 import android.os.Bundle
@@ -12,13 +14,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import java.android.cinema.R
 import java.android.cinema.databinding.FragmentGeolocationBinding
-import java.android.cinema.utils.PrintVisible
-import java.io.IOException
+import java.android.cinema.utils.CountDownTimerProgressBar
 
+import java.android.cinema.utils.PrintVisible
+import java.android.cinema.view.utilsToView.Navigation
 
 class GeolocationFragment: Fragment(){
 
@@ -40,10 +45,10 @@ class GeolocationFragment: Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.button.setOnClickListener(View.OnClickListener {
-            checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-        })
+        checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)
 
+        binding.progressBarGeolocation.progress = 0
+        CountDownTimerProgressBar.downLoad(binding.progressBarGeolocation)
     }
 
     override fun onDestroy() {
@@ -70,9 +75,8 @@ class GeolocationFragment: Fragment(){
                     0F, locationListener
                 )
 
-                // FIXME получить один раз координаты
             }else{
-                //locationManager.getLastKnownLocation() // TODO HW
+                checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }
     }
@@ -103,9 +107,7 @@ class GeolocationFragment: Fragment(){
 
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
-            //PrintVisible.printLong("${location.latitude} ${location.longitude}")
             getAddress(location)
-
         }
 
         override fun onProviderDisabled(provider: String) {
@@ -120,19 +122,13 @@ class GeolocationFragment: Fragment(){
     }
 
     fun getAddress(location: Location) {
-        val geocoder = Geocoder(context)
+        PrintVisible.printShort("Ваши координаты -> ${location.latitude} ${location.longitude}")
 
-        try {
-            PrintVisible.printShort("${location.latitude} ${location.longitude}")
-            geocoder.getFromLocation(location.latitude, location.longitude, 1)
-        }catch (e: IOException){
-            PrintVisible.printShort("${e.toString()}")
-            e.printStackTrace()
-
-        }
+        Navigation.createFragmentWithBackStack(requireActivity() as AppCompatActivity, R.id.containerMap,
+            MapsFragment.newInstance(location.latitude, location.longitude)
+        )
 
         locationManager.removeUpdates(locationListener)
-
     }
 
     private val REQUEST_CODE_LOCATION = 999
@@ -152,10 +148,7 @@ class GeolocationFragment: Fragment(){
                 if (permissions[pIndex] == Manifest.permission.ACCESS_FINE_LOCATION
                     && grantResults[pIndex] == PackageManager.PERMISSION_GRANTED
                 ) {
-
-                    PrintVisible.printLong("УРА")
                     getLocation()
-
                 }
             }
         }

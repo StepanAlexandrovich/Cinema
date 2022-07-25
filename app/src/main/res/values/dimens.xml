@@ -5,5 +5,7 @@
     <dimen name="width_image_movie">130</dimen>
     <dimen name="height_image_movie">130</dimen>
     <dimen name="small">16dp</dimen>
+
     <dimen name="text_size_average">16dp</dimen>
+    <dimen name="text_size_small">8dp</dimen>
 </resources>

@@ -6,14 +6,14 @@ object PublicSettings {
 
     fun switchAdult(){ isAdult = !isAdult }
 
-    var mode:Mode? = null
-
-    //val modeDataBase = Mode(listOf("comedy", "fantasy")) // раскоментирую
+    val modeDataBase = Mode(listOf("comedy","fantasy","animation"))
 
     val modeTest = Mode(listOf("comedy","fantasy","1","2"))
-    val modeDataBase = Mode(listOf("room"))
+    //val modeDataBase = Mode(listOf("room"))
     val modeOkHttp = Mode(listOf("inception 2010","fringe"))
     val modeRetrofit = Mode(listOf("The Leftovers 2014","lost 2004","inception 2010","fringe"))
     class Mode(val strings:List<String>){}
+
+    var mode:Mode = modeTest
 
 }

@@ -1,4 +1,4 @@
-package java.android.cinema
+package java.android.cinema.utils
 
 import java.android.cinema.domen.Movie
 import java.android.cinema.domen.Movies
