@@ -3,20 +3,26 @@ package java.android.cinema.utils
 import android.os.CountDownTimer
 import android.widget.ProgressBar
 
-object CountDownTimerProgressBar {
-
-    fun downLoad(progressBar: ProgressBar){
-
-        object : CountDownTimer(10000,500){
-            override fun onTick(p0: Long) {
-                if(progressBar.progress < progressBar.max){
-                    progressBar.progress += 10
-                }
+class CountDownTimerProgressBar(val progressBar: ProgressBar) {
+    private val timer = object :CountDownTimer(10000,200){
+        override fun onTick(p0: Long) {
+            if(progressBar.progress < progressBar.max){
+                progressBar.progress += 1
             }
+        }
 
-            override fun onFinish() { }
+        override fun onFinish() {
+            progressBar.progress = progressBar.max
+        }
+    }
 
-        }.start()
+    fun start(){
+        progressBar.progress = 0
+        timer.start()
+    }
+
+    fun finish(){
+        timer.onFinish()
     }
 
 }

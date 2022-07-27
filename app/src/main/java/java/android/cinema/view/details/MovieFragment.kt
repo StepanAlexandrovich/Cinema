@@ -3,9 +3,7 @@ package java.android.cinema.view.details
 
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 
@@ -15,8 +13,12 @@ import java.android.cinema.view.CustomDialogFragmentWithView
 import java.android.cinema.view.CustomDialogListener
 
 import android.view.View.OnClickListener
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.squareup.picasso.Picasso
+import java.android.cinema.R
 import java.android.cinema.model.room.RoomUtils
+import java.android.cinema.view.mainscreen.MenuMainScreen
 
 class MovieFragment: Fragment(),OnClickListener {
 
@@ -42,11 +44,12 @@ class MovieFragment: Fragment(),OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.buttonReview.setOnClickListener(this)
-        binding.buttonAddToComedy.setOnClickListener(this)
-        binding.buttonAddToFantasy.setOnClickListener(this)
-        binding.buttonAddToAnimation.setOnClickListener(this)
+        // menu
+        val myToolbar = view.findViewById<Toolbar>(R.id.toolbarMovie)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(myToolbar)
+        setHasOptionsMenu(true)
 
+        binding.buttonReview.setOnClickListener(this)
         renderData()
     }
 
@@ -80,10 +83,16 @@ class MovieFragment: Fragment(),OnClickListener {
 
         when (p0?.getId()) {
             binding.buttonReview.id     -> { createDialog(p0)  }
-            binding.buttonAddToComedy.id   -> { RoomUtils.addMovie(0,currentMovie!!) }
-            binding.buttonAddToFantasy.id   -> { RoomUtils.addMovie(1,currentMovie!!) }
-            binding.buttonAddToAnimation.id   -> { RoomUtils.addMovie(2,currentMovie!!) }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_movie, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return ListenerMenuMovie(requireActivity()).switchItems(item)
     }
 
 }

@@ -14,7 +14,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -32,6 +31,8 @@ class GeolocationFragment: Fragment(){
     private var _binding: FragmentGeolocationBinding? = null
     val binding: FragmentGeolocationBinding get() { return _binding!! }
 
+    lateinit var countDownTimerProgressBar:CountDownTimerProgressBar
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,8 +48,8 @@ class GeolocationFragment: Fragment(){
 
         checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)
 
-        binding.progressBarGeolocation.progress = 0
-        CountDownTimerProgressBar.downLoad(binding.progressBarGeolocation)
+        countDownTimerProgressBar = CountDownTimerProgressBar(binding.progressBarGeolocation)
+        countDownTimerProgressBar.start()
     }
 
     override fun onDestroy() {
@@ -122,9 +123,9 @@ class GeolocationFragment: Fragment(){
     }
 
     fun getAddress(location: Location) {
-        PrintVisible.printShort("Ваши координаты -> ${location.latitude} ${location.longitude}")
+        countDownTimerProgressBar.finish()
 
-        Navigation.createFragmentWithBackStack(requireActivity() as AppCompatActivity, R.id.containerMap,
+        Navigation.createFragmentWithBackStack(requireActivity(),R.id.containerMap,
             MapsFragment.newInstance(location.latitude, location.longitude)
         )
 

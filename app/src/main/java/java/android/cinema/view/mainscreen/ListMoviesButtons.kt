@@ -3,10 +3,8 @@ package java.android.cinema.view.mainscreen
 import android.os.Build
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.Switch
 import androidx.annotation.RequiresApi
 import java.android.cinema.databinding.FragmentListMoviesBinding
-import java.android.cinema.utils.PrintVisible
 
 class ListMoviesButtons(private val binding: FragmentListMoviesBinding, private val listMoviesFragment: ListMoviesFragment): OnClickListener{
 
@@ -17,7 +15,7 @@ class ListMoviesButtons(private val binding: FragmentListMoviesBinding, private 
         binding.buttonTest.setOnClickListener(this)
 
         binding.buttonSnackBarMenu.setOnClickListener(this)
-        binding.buttonAdult.setOnClickListener(this)
+        binding.imageViewAdult.setOnClickListener(this)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -29,7 +27,7 @@ class ListMoviesButtons(private val binding: FragmentListMoviesBinding, private 
             binding.buttonTest.id             -> { listMoviesFragment.fromTest() }
 
             binding.buttonSnackBarMenu.id     -> { listMoviesFragment.snackBarMenu()     }
-            binding.buttonAdult.id            -> { listMoviesFragment.switchAdult()      }
+            binding.imageViewAdult.id            -> { listMoviesFragment.switchAdult()      }
         }
     }
 }

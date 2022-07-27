@@ -45,36 +45,16 @@
                 android:text="отзыв"
                 android:textSize="@dimen/text_size_average"/>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/buttonAddToComedy"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:text="add to comedy"
-                    android:textSize="@dimen/text_size_small" />
-
-                <Button
-                    android:id="@+id/buttonAddToFantasy"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:text="add to fantasy"
-                    android:textSize="@dimen/text_size_small"/>
-
-                <Button
-                    android:id="@+id/buttonAddToAnimation"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:text="add to anime"
-                    android:textSize="@dimen/text_size_small"/>
-
-            </LinearLayout>
-
         </LinearLayout>
+
+        <androidx.appcompat.widget.Toolbar
+            app:title="movie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/toolbarMovie"
+            android:background="@color/cardview_dark_background">
+
+        </androidx.appcompat.widget.Toolbar>
 
     </LinearLayout>
 

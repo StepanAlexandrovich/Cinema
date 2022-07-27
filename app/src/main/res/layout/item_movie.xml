@@ -33,6 +33,7 @@
                 android:id="@+id/textViewItem"
                 android:layout_width="130dp"
                 android:layout_height="60dp"
+                android:textSize="16dp"
                 android:layout_gravity="center"
                 android:ellipsize="end" />
 

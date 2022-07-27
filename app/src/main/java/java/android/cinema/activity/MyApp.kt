@@ -2,7 +2,7 @@ package java.android.cinema.activity
 
 import android.app.Application
 import java.android.cinema.model.RepositoryMovies
-import java.android.cinema.model.local.RepositoryMoviesTestImpl
+import java.android.cinema.model.test.RepositoryMoviesTestImpl
 import java.android.cinema.model.remote.okhttp.RepositoryMoviesRemoteOkHttpImpl
 import java.android.cinema.model.remote.retrofit.RepositoryMoviesRemoteRetrofitImpl
 import java.android.cinema.model.room.RepositoryMoviesLocalRoomImpl

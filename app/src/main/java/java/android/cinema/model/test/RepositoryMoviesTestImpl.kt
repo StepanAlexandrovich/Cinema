@@ -1,6 +1,5 @@
-package java.android.cinema.model.local
+package java.android.cinema.model.test
 
-import java.android.cinema.activity.MainActivity
 import java.android.cinema.domen.Movie
 import java.android.cinema.model.MoviesCallback
 import java.android.cinema.model.RepositoryMovies
@@ -12,7 +11,7 @@ class RepositoryMoviesTestImpl: RepositoryMovies {
 
 
             if(stringGenre == "comedy"){
-                Thread.sleep(500)
+                Thread.sleep(2000)
 
                 val movies = mutableListOf<Movie>()
                 movies.add(Movie("comedy1"))
@@ -22,7 +21,7 @@ class RepositoryMoviesTestImpl: RepositoryMovies {
             }
 
             if(stringGenre == "fantasy"){
-                Thread.sleep(1000)
+                Thread.sleep(4000)
 
                 val movies = mutableListOf<Movie>()
                 movies.add(Movie("fantasy1"))
@@ -32,7 +31,7 @@ class RepositoryMoviesTestImpl: RepositoryMovies {
             }
 
             if(stringGenre == "1"){
-                Thread.sleep(1500)
+                Thread.sleep(6000)
 
                 val movies = mutableListOf<Movie>()
                 movies.add(Movie("1"))
@@ -42,7 +41,7 @@ class RepositoryMoviesTestImpl: RepositoryMovies {
             }
 
             if(stringGenre == "2"){
-                Thread.sleep(2000)
+                Thread.sleep(8000)
 
                 val movies = mutableListOf<Movie>()
                 movies.add(Movie("2"))

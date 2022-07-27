@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.android.cinema.activity.MainActivity
 import java.android.cinema.databinding.ItemGenreBinding
-import java.android.cinema.utils.CountDownTimerProgressBar
 
 class RecyclerAdapterGenres(val onItemClick: OnItemClick) : RecyclerView.Adapter<RecyclerAdapterGenres.ViewHolder>() {
 
@@ -34,9 +33,6 @@ class RecyclerAdapterGenres(val onItemClick: OnItemClick) : RecyclerView.Adapter
             val recyclerView = binding.rv
             recyclerView.layoutManager = LinearLayoutManager(itemView.context,RecyclerView.HORIZONTAL,false)
             recyclerView.adapter = RecyclerAdapterMovies(position,onItemClick)
-
-            binding.progressBarGenre.progress = 0
-            CountDownTimerProgressBar.downLoad(binding.progressBarGenre)
         }
     }
 

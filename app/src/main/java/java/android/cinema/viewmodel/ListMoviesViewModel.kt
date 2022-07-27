@@ -8,15 +8,11 @@ import java.android.cinema.activity.MyApp
 import java.android.cinema.domen.Movie
 import java.android.cinema.model.MoviesCallback
 import java.android.cinema.model.RepositoryMovies
-import java.android.cinema.model.local.RepositoryMoviesTestImpl
-import java.android.cinema.model.remote.okhttp.RepositoryMoviesRemoteOkHttpImpl
-import java.android.cinema.model.remote.retrofit.RepositoryMoviesRemoteRetrofitImpl
-import java.android.cinema.model.room.RepositoryMoviesLocalRoomImpl
 import java.io.IOException
 
 class ListMoviesViewModel():ViewModel() {
 
-    val liveData =  MutableLiveData<AppState>() // постараюсь вернуть
+    val liveDataLoad =  MutableLiveData<AppState>()
 
     val liveDates = createLiveDates()
 
@@ -47,8 +43,9 @@ class ListMoviesViewModel():ViewModel() {
     fun sentRequest(){
         choiceRepository()
 
-        repeat(PublicSettings.mode!!.strings.size){
-            repository?.getListMovies(PublicSettings.mode!!.strings[it],MoviesCallbackImpl(it));
+        repeat(PublicSettings.mode.strings.size){
+            liveDataLoad.postValue( AppState.Loading )
+            repository?.getListMovies(PublicSettings.mode.strings[it],MoviesCallbackImpl(it));
         }
     }
 
@@ -58,7 +55,7 @@ class ListMoviesViewModel():ViewModel() {
         }
 
         override fun onFailure(exception: IOException) {
-            liveData.postValue( AppState.Error(exception) )
+            //liveData.postValue( AppState.Error(exception) )
             // подумать как то использовать индекс
         }
 

@@ -6,5 +6,4 @@ sealed class AppState {
     data class SuccessData(val index:Int,val movies: MutableList<Movie>) : AppState()
     data class Error(val error: Throwable) : AppState()
     object Loading : AppState()
-
 }
