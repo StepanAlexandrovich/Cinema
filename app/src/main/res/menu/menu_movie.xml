@@ -4,17 +4,17 @@
 
     <item
         android:id="@+id/itemAddInComedy"
-        android:title="itemAddInComedy"
+        android:title="add in comedy"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/itemAddInFantasy"
-        android:title="itemAddInFantasy"
+        android:title="add in fantasy"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/itemAddInAnime"
-        android:title="itemAddInAnime"
+        android:title="add in Anime"
         app:showAsAction="never" />
 
 </menu>

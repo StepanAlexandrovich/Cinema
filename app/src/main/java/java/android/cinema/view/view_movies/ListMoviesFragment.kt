@@ -1,4 +1,4 @@
-package java.android.cinema.view.mainscreen
+package java.android.cinema.view.view_movies
 
 import android.os.Build
 import android.os.Bundle
@@ -16,18 +16,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.android.cinema.PublicSettings
 import java.android.cinema.R
+import java.android.cinema.a_take_away_out_proect.ListMoviesSnackBar
 import java.android.cinema.activity.MainActivity
 
 import java.android.cinema.databinding.FragmentListMoviesBinding
 
 import java.android.cinema.save_settings.SharedPref
 import java.android.cinema.utils.CountDownTimerProgressBar
-import java.android.cinema.utils.PrintVisible
 import java.android.cinema.view.utilsToView.Navigation
 import java.android.cinema.viewmodel.AppState
 import java.android.cinema.viewmodel.ListMoviesViewModel
 
-import java.android.cinema.view.details.MovieFragment
+import java.android.cinema.view.view_movie.MovieFragment
+import java.android.cinema.view.view_movies.listeners.ListenerButtonsMovies
+import java.android.cinema.view.view_movies.listeners.ListenerMenuMovies
 
 
 class ListMoviesFragment: Fragment() {
@@ -69,11 +71,12 @@ class ListMoviesFragment: Fragment() {
 
         // menu
         val myToolbar = view.findViewById<Toolbar>(R.id.toolbar)
+            myToolbar.setTitle(" ") // разобраться
         (requireActivity() as AppCompatActivity).setSupportActionBar(myToolbar)
         setHasOptionsMenu(true)
 
         // buttons
-        ListMoviesButtons(binding,this)
+        ListenerButtonsMovies(binding,this)
 
         // recycle
         rvGenres = binding.rvGenres
@@ -148,23 +151,14 @@ class ListMoviesFragment: Fragment() {
         viewModel.sentRequest()
     }
 
-    ///////// FUN TO BUTTONS ///////
-    fun fromTest(){
-        PublicSettings.mode = PublicSettings.modeTest
-        update()
-    }
-
     fun fromDataBase(){
+        //PublicSettings.mode = PublicSettings.modeTest
         PublicSettings.mode = PublicSettings.modeDataBase
         update()
     }
 
-    fun fromOkHttp(){
-        PublicSettings.mode = PublicSettings.modeOkHttp
-        update()
-    }
-
-    fun fromRetrofit(){
+    fun fromInternet(){
+        //PublicSettings.mode = PublicSettings.modeOkHttp
         PublicSettings.mode = PublicSettings.modeRetrofit
         update()
     }
@@ -187,7 +181,7 @@ class ListMoviesFragment: Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return MenuMainScreen(requireActivity()).switchItems(item)
+        return ListenerMenuMovies(requireActivity(),this).switchItems(item)
     }
 
 }

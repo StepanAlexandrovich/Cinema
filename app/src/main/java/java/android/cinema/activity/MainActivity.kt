@@ -15,7 +15,7 @@ import java.android.cinema.databinding.ActivityMainBinding
 import java.android.cinema.domen.Movies
 import java.android.cinema.extra.receiver.BroadCastReceiverAirPlaneMode
 import java.android.cinema.save_settings.SharedPref
-import java.android.cinema.view.mainscreen.ListMoviesFragment
+import java.android.cinema.view.view_movies.ListMoviesFragment
 import java.android.cinema.view.utilsToView.Navigation
 
 class MainActivity : AppCompatActivity(){
@@ -41,14 +41,14 @@ class MainActivity : AppCompatActivity(){
             Navigation.createFragment(this, R.id.container, ListMoviesFragment.newInstance())
         }
 
-        pushNotification("not","not")
+        //pushNotification("not","not")
     }
 
     val CHANNEL_HIGH_ID = "channel_111"
     val CHANNEL_LOW_ID  = "channel_222"
     val NOTIFICATION_ID = 1
 
-    private fun pushNotification(title:String,body:String){
+    fun pushNotification(title:String,body:String){
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
 

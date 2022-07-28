@@ -1,4 +1,4 @@
-package java.android.cinema.view.mainscreen
+package java.android.cinema.view.view_movies
 
 import android.view.LayoutInflater
 import android.view.View

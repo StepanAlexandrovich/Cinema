@@ -1,13 +1,14 @@
-package java.android.cinema.view.mainscreen
+package java.android.cinema.a_take_away_out_proect
 
 import android.graphics.Color
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import java.android.cinema.R
+import java.android.cinema.view.view_movies.ListMoviesFragment
 
 object ListMoviesSnackBar {
 
-    fun snackBarMenu(fragment:ListMoviesFragment){
+    fun snackBarMenu(fragment: ListMoviesFragment){
         val linearLayout = fragment.binding.listGenres
         val snackBar: Snackbar = Snackbar.make(linearLayout,"", Snackbar.LENGTH_INDEFINITE)
         val custom: View = fragment.layoutInflater.inflate(R.layout.snackbar_custom,null)

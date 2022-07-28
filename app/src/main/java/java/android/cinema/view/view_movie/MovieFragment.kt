@@ -1,4 +1,4 @@
-package java.android.cinema.view.details
+package java.android.cinema.view.view_movie
 
 
 import android.os.Build
@@ -17,8 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.squareup.picasso.Picasso
 import java.android.cinema.R
-import java.android.cinema.model.room.RoomUtils
-import java.android.cinema.view.mainscreen.MenuMainScreen
 
 class MovieFragment: Fragment(),OnClickListener {
 
