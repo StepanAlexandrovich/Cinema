@@ -1,4 +1,4 @@
-package java.android.cinema.internet
+package java.android.cinema.a_take_away_out_proect
 
 import android.os.Build
 import androidx.annotation.RequiresApi

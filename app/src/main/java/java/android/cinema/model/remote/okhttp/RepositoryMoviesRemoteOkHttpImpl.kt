@@ -17,7 +17,10 @@ class RepositoryMoviesRemoteOkHttpImpl: RepositoryMovies {
         val client = OkHttpClient()
         val builder = Request.Builder()
 
-        builder.url("https://imdb-api.com/en/API/SearchMovie/${BuildConfig.API_KEY}/${stringGenre}")
+        //builder.url("https://imdb-api.com/en/API/SearchMovie/${BuildConfig.API_KEY}/${stringGenre}")
+
+        val key = "k_cc86op97"
+        builder.url("https://imdb-api.com/en/API/SearchMovie/${key}/${stringGenre}")
 
         val request: Request = builder.build()
         val cal: Call = client.newCall(request)

@@ -21,8 +21,9 @@ class RepositoryMoviesRemoteRetrofitImpl: RepositoryMovies {
         retrofitImpl.addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
         val api = retrofitImpl.build().create(MoviesAPI::class.java)
 
-        //val key: String = "k_71rwtkzg"  //запаска
-        api.getMovies("/en/API/SearchMovie/${BuildConfig.API_KEY}/${stringGenre}").enqueue(object : Callback<MoviesDTO> {
+        val key: String = "k_71rwtkzg"  //запаска
+        //api.getMovies("/en/API/SearchMovie/${BuildConfig.API_KEY}/${stringGenre}").enqueue(object : Callback<MoviesDTO> {
+        api.getMovies("/en/API/SearchMovie/${key}/${stringGenre}").enqueue(object : Callback<MoviesDTO> {
             override fun onResponse(call: Call<MoviesDTO>, response: Response<MoviesDTO>) {
                 if(response.isSuccessful&&response.body()!=null){
                     callback.onResponse(ConvertDTOinMovies.returnList(response.body()!!))

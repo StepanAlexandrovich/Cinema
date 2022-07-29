@@ -39,7 +39,7 @@ class ListMoviesFragment: Fragment() {
 
     private val movies = MainActivity.localMovies
 
-    private var imageDirectionId = R.drawable.nolimits
+    private var imageDirectionId = R.drawable.limits
 
     private lateinit var countDownTimerProgressBar:CountDownTimerProgressBar
 
@@ -89,7 +89,7 @@ class ListMoviesFragment: Fragment() {
         // view model
         viewModel = ViewModelProvider(this).get(ListMoviesViewModel::class.java)
         //viewModel.liveData.observe(viewLifecycleOwner) { renderData(it) }  // не надёжно пока
-        viewModel.liveDataLoad.observe(viewLifecycleOwner) { renderData(it) }  // не надёжно пока
+        viewModel.liveDataLoad.observe(viewLifecycleOwner) { renderData(it) }
 
         viewModel.liveDates.forEach(){
             it.observe(viewLifecycleOwner) { renderData(it) }
@@ -137,7 +137,7 @@ class ListMoviesFragment: Fragment() {
 
     private fun changeColor(){
         if(PublicSettings.isAdult){
-            imageDirectionId = R.drawable.nolimits
+            //imageDirectionId = R.drawable.nolimits
             binding.imageViewAdult.setImageResource(imageDirectionId)
         }
         else {

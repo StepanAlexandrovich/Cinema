@@ -31,9 +31,44 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
+    signingConfigs {
+        sdfgrsdg {
+            Properties properties = new Properties()
+            properties.load(rootProject.file("passwordSdfgrsdg.properties").newDataInputStream())
+            def password = properties.getProperty("password")
+            storeFile file("sdfgrsdg.jks")
+            storePassword = password
+            keyAlias 'bomba_cod'
+            keyPassword =password
+        }
+
         release {
-            minifyEnabled false
+            Properties properties = new Properties()
+            properties.load(rootProject.file("passwordRelease.properties").newDataInputStream())
+            def password = properties.getProperty("password")
+            storeFile file("release.jks")
+            storePassword = password
+            keyAlias 'bomba_cod'
+            keyPassword =password
+        }
+    }
+
+    buildTypes {
+
+        mybuild {
+            signingConfig = signingConfigs.sdfgrsdg
+            multiDexEnabled true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug{
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            signingConfig = signingConfigs.release
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -53,16 +88,13 @@ dependencies {
     // maps
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
 
+    // bd
     apply plugin: 'kotlin-kapt'
     implementation 'androidx.room:room-runtime:2.4.2'
     kapt 'androidx.room:room-compiler:2.4.2'
-    // image
 
-    //implementation 'io.coil-kt:coil:2.1.0'
-    //implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
-    //implementation 'com.android.tools.build:gradle:3.5.0'
+    // image
     implementation 'com.squareup.picasso:picasso:2.71828'
-    //implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
 
     //retrofit 2
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

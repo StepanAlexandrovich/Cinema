@@ -6,7 +6,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import java.android.cinema.BuildConfig
 import java.android.cinema.PublicSettings
-import java.android.cinema.internet.InternetUtils
 import java.android.cinema.model.remote.dto.MoviesDTO
 import java.io.BufferedReader
 import java.io.IOException
@@ -21,7 +20,10 @@ object MoviesLoader {
     fun request(block:(movies:MoviesDTO)->Unit){
 
         try {
-            val uri = URL("https://imdb-api.com/en/API/SearchMovie/${BuildConfig.API_KEY}/${PublicSettings.stringsGenre[0]}")
+            //val uri = URL("https://imdb-api.com/en/API/SearchMovie/${BuildConfig.API_KEY}/${PublicSettings.stringsGenre[0]}")
+
+            val key = "k_cc86op97"
+            val uri = URL("https://imdb-api.com/en/API/SearchMovie/${key}/${PublicSettings.stringsGenre[0]}")
 
             Thread{
 

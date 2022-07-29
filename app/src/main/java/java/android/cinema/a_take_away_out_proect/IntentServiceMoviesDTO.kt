@@ -7,7 +7,6 @@ import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import java.android.cinema.internet.InternetUtils
 import java.android.cinema.model.remote.dto.MoviesDTO
 import java.io.BufferedReader
 import java.io.IOException
