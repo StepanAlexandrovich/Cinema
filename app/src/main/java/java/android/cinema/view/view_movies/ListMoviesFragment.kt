@@ -71,7 +71,7 @@ class ListMoviesFragment: Fragment() {
 
         // menu
         val myToolbar = view.findViewById<Toolbar>(R.id.toolbar)
-            myToolbar.setTitle(" ") // разобраться
+            //myToolbar.setTitle(" ") // разобраться
         (requireActivity() as AppCompatActivity).setSupportActionBar(myToolbar)
         setHasOptionsMenu(true)
 

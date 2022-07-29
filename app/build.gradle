@@ -1,8 +1,6 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-
-
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
@@ -11,13 +9,6 @@ plugins {
 
 android {
     compileSdk 31
-
-    buildTypes.each {
-        Properties properties = new Properties()
-        properties.load(project.rootProject.file("apikey.properties").newDataInputStream())
-        def apiKey = properties.getProperty("api_key","")
-        it.buildConfigField "String", "API_KEY", apiKey
-    }
 
     defaultConfig {
         applicationId "java.android.cinema"
@@ -32,15 +23,6 @@ android {
     }
 
     signingConfigs {
-        sdfgrsdg {
-            Properties properties = new Properties()
-            properties.load(rootProject.file("passwordSdfgrsdg.properties").newDataInputStream())
-            def password = properties.getProperty("password")
-            storeFile file("sdfgrsdg.jks")
-            storePassword = password
-            keyAlias 'bomba_cod'
-            keyPassword =password
-        }
 
         release {
             Properties properties = new Properties()
@@ -54,13 +36,6 @@ android {
     }
 
     buildTypes {
-
-        mybuild {
-            signingConfig = signingConfigs.sdfgrsdg
-            multiDexEnabled true
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
         debug{
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -78,6 +53,16 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+
+    flavorDimensions 'version'
+    productFlavors {
+        PRO {
+            dimension 'version'
+        }
+        FREE {
+            dimension 'version'
+        }
     }
 }
 
