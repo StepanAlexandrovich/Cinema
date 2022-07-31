@@ -18,7 +18,7 @@ class ListMoviesViewModel():ViewModel() {
 
     private fun createLiveDates(): MutableList< MutableLiveData<AppState> > {
         val liveDates = mutableListOf< MutableLiveData<AppState> >()
-        repeat(MainActivity.localMovies.genres.size){
+        repeat(PublicSettings.maxNumberOfGenres){
             liveDates.add(MutableLiveData<AppState>())
         }
         return liveDates
@@ -28,15 +28,14 @@ class ListMoviesViewModel():ViewModel() {
 
     private fun choiceRepository() {
         when(PublicSettings.mode){
-
+            // local
             PublicSettings.modeTest -> { repository = MyApp.repositoryTest }
-
             PublicSettings.modeDataBase -> { repository = MyApp.repositoryRoom }
 
+            // internet
+            PublicSettings.modeInternetStandard -> { repository = MyApp.repositoryInternet }
             PublicSettings.modeOkHttp   -> { repository = MyApp.repositoryOkHttp }
-
             PublicSettings.modeRetrofit -> { repository = MyApp.repositoryRetrofit }
-
         }
     }
 
@@ -55,8 +54,7 @@ class ListMoviesViewModel():ViewModel() {
         }
 
         override fun onFailure(exception: IOException) {
-            //liveData.postValue( AppState.Error(exception) )
-            // подумать как то использовать индекс
+            liveDates[index].postValue( AppState.Error(index,exception) )
         }
 
     }

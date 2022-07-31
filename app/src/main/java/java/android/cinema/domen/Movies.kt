@@ -1,8 +1,21 @@
 package java.android.cinema.domen
 
+import java.android.cinema.PublicSettings
+
 class Movies {
     var genres = mutableListOf<Genre>()
     var genre:Genre = Genre("default")
+
+    init {
+        resetAll()
+    }
+
+    fun resetAll(){
+        genres = mutableListOf<Genre>()
+        repeat(PublicSettings.maxNumberOfGenres){
+            addGenre("default")
+        }
+    }
 
     class Genre(val title:String){
         var list = mutableListOf<Movie>()
@@ -11,6 +24,8 @@ class Movies {
             list.add(movie)
         }
     }
+
+    //// TOOLS ////
 
     fun addGenreWithMovies(nameGenre:String, movies: MutableList<Movie>){
         val genre = Genre(nameGenre)
@@ -23,14 +38,6 @@ class Movies {
         genre.list = movies
         genres[indexGenre] = genre
     }
-
-    fun resetAll(){
-        genres = mutableListOf<Genre>()
-        repeat(6){
-            addGenre("default")
-        }
-    }
-
 
     fun addGenre(name:String){
         genre = Genre(name)

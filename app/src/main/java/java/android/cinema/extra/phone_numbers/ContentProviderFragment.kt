@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.ContentResolver
 import android.content.pm.PackageManager
 import android.database.Cursor
-import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.view.LayoutInflater
@@ -34,6 +33,13 @@ class ContentProviderFragment: Fragment(){
 
         checkPermission()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+
 
     private fun checkPermission(){
         val permResult = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS)
@@ -112,10 +118,7 @@ class ContentProviderFragment: Fragment(){
         return number
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
+
 
 
 

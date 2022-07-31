@@ -5,6 +5,7 @@ import java.android.cinema.model.RepositoryMovies
 import java.android.cinema.model.test.RepositoryMoviesTestImpl
 import java.android.cinema.model.remote.okhttp.RepositoryMoviesRemoteOkHttpImpl
 import java.android.cinema.model.remote.retrofit.RepositoryMoviesRemoteRetrofitImpl
+import java.android.cinema.model.remote.standart.RepositoryMoviesRemoteStandardImpl
 import java.android.cinema.model.room.RepositoryMoviesLocalRoomImpl
 
 class MyApp : Application() {
@@ -17,9 +18,11 @@ class MyApp : Application() {
         private var myApp: MyApp? = null
         fun getMyApp() = myApp!!
 
-        val repositoryRetrofit:RepositoryMovies = RepositoryMoviesRemoteRetrofitImpl()
-        val repositoryOkHttp:RepositoryMovies = RepositoryMoviesRemoteOkHttpImpl()
-        val repositoryRoom:RepositoryMovies = RepositoryMoviesLocalRoomImpl()
         val repositoryTest:RepositoryMovies = RepositoryMoviesTestImpl()
+        val repositoryRoom:RepositoryMovies = RepositoryMoviesLocalRoomImpl()
+        val repositoryInternet:RepositoryMovies = RepositoryMoviesRemoteStandardImpl()
+        val repositoryOkHttp:RepositoryMovies = RepositoryMoviesRemoteOkHttpImpl()
+        val repositoryRetrofit:RepositoryMovies = RepositoryMoviesRemoteRetrofitImpl()
+
     }
 }

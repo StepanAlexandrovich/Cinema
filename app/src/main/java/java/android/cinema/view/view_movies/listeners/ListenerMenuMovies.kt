@@ -6,10 +6,10 @@ import java.android.cinema.R
 import java.android.cinema.extra.geolocation.GeolocationFragment
 import java.android.cinema.extra.phone_numbers.ContentProviderFragment
 import java.android.cinema.extra.push.PushFragment
-import java.android.cinema.view.view_movies.ListMoviesFragment
+import java.android.cinema.view.view_movies.MoviesFragment
 import java.android.cinema.view.utilsToView.Navigation
 
-class ListenerMenuMovies(private val activity: FragmentActivity, private val listMoviesFragment:ListMoviesFragment) {
+class ListenerMenuMovies(private val activity: FragmentActivity, private val listMoviesFragment:MoviesFragment) {
     fun switchItems(item:MenuItem):Boolean{
         return when (item.itemId) {
             R.id.menuPhones -> {

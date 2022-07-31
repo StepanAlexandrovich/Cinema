@@ -2,10 +2,10 @@ package java.android.cinema.view.view_movies.listeners
 
 import android.view.View
 import android.view.View.OnClickListener
-import java.android.cinema.databinding.FragmentListMoviesBinding
-import java.android.cinema.view.view_movies.ListMoviesFragment
+import java.android.cinema.databinding.FragmentMoviesBinding
+import java.android.cinema.view.view_movies.MoviesFragment
 
-class ListenerButtonsMovies(private val binding: FragmentListMoviesBinding, private val listMoviesFragment: ListMoviesFragment): OnClickListener{
+class ListenerButtonsMovies(private val binding: FragmentMoviesBinding, private val listMoviesFragment: MoviesFragment): OnClickListener{
 
     init {
         binding.imageViewAdult.setOnClickListener(this)
@@ -13,7 +13,7 @@ class ListenerButtonsMovies(private val binding: FragmentListMoviesBinding, priv
 
     override fun onClick(p0: View?) {
         when (p0?.getId()) {
-            binding.imageViewAdult.id            -> { listMoviesFragment.switchAdult()      }
+            binding.imageViewAdult.id  -> { listMoviesFragment.switchAdult()      }
         }
     }
 }

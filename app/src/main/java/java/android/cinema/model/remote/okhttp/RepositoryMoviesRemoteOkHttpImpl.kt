@@ -2,8 +2,8 @@ package java.android.cinema.model.remote.okhttp
 
 import com.google.gson.Gson
 import okhttp3.*
+import java.android.cinema.API_KEY
 
-import java.android.cinema.BuildConfig
 import java.android.cinema.model.MoviesCallback
 import java.android.cinema.model.RepositoryMovies
 
@@ -17,10 +17,8 @@ class RepositoryMoviesRemoteOkHttpImpl: RepositoryMovies {
         val client = OkHttpClient()
         val builder = Request.Builder()
 
-        //builder.url("https://imdb-api.com/en/API/SearchMovie/${BuildConfig.API_KEY}/${stringGenre}")
-
-        val key = "k_cc86op97"
-        builder.url("https://imdb-api.com/en/API/SearchMovie/${key}/${stringGenre}")
+        //builder.url("https://imdb-api.com/en/API/SearchMovie/${BuildConfig.API_KEY}/${stringGenre}")  // утрата из за release сборки
+        builder.url("https://imdb-api.com/en/API/SearchMovie/${API_KEY}/${stringGenre}")
 
         val request: Request = builder.build()
         val cal: Call = client.newCall(request)

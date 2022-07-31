@@ -1,6 +1,5 @@
 package java.android.cinema.view.view_movie
 
-
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -9,20 +8,21 @@ import androidx.fragment.app.Fragment
 
 import java.android.cinema.databinding.FragmentMovieBinding
 import java.android.cinema.domen.Movie
-import java.android.cinema.view.CustomDialogFragmentWithView
-import java.android.cinema.view.CustomDialogListener
+import java.android.cinema.view.view_movie.extra.CustomDialogFragmentWithView
+import java.android.cinema.view.view_movie.extra.CustomDialogListener
 
-import android.view.View.OnClickListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.squareup.picasso.Picasso
+import java.android.cinema.PublicSettings
 import java.android.cinema.R
 
-class MovieFragment: Fragment(),OnClickListener {
+class MovieFragment: Fragment(){
 
     companion object {
         var currentMovie:Movie? = null
         fun newInstance(movie: Movie): MovieFragment {
+            currentMovie = movie
             return MovieFragment()
         }
     }
@@ -47,7 +47,6 @@ class MovieFragment: Fragment(),OnClickListener {
         (requireActivity() as AppCompatActivity).setSupportActionBar(myToolbar)
         setHasOptionsMenu(true)
 
-        binding.buttonReview.setOnClickListener(this)
         renderData()
     }
 
@@ -61,10 +60,10 @@ class MovieFragment: Fragment(),OnClickListener {
 
     }
 
-    private val dialog = CustomDialogFragmentWithView();
-    private fun createDialog(view:View){
+    fun createDialog(){
+        val dialog = CustomDialogFragmentWithView();
 
-        CustomDialogFragmentWithView.changeRating( currentMovie!!.rating )
+        CustomDialogFragmentWithView.changeRating( currentMovie!!.userRating )
 
         dialog.setterListener( object : CustomDialogListener {
             override fun onOk() {
@@ -74,23 +73,19 @@ class MovieFragment: Fragment(),OnClickListener {
             override fun onNo() {}
         })
 
-        dialog.show(requireActivity().supportFragmentManager,CustomDialogFragmentWithView.TAG)
-    }
-
-    override fun onClick(p0: View?) {
-
-        when (p0?.getId()) {
-            binding.buttonReview.id     -> { createDialog(p0)  }
-        }
+        dialog.show(requireActivity().supportFragmentManager, CustomDialogFragmentWithView.TAG)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_movie, menu)
+        if(PublicSettings.mode != PublicSettings.modeDataBase){
+            inflater.inflate(R.menu.menu_movie_add, menu)
+        }
+        inflater.inflate(R.menu.menu_movie_review, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return ListenerMenuMovie(requireActivity()).switchItems(item)
+        return ListenerMenuMovie(this).switchItems(item)
     }
 
 }

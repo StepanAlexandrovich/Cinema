@@ -1,4 +1,4 @@
-package java.android.cinema.a_take_away_out_proect
+package java.android.cinema.model.remote.standart
 
 import android.os.Build
 import androidx.annotation.RequiresApi

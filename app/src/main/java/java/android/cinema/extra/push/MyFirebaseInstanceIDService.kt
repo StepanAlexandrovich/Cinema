@@ -39,7 +39,7 @@ class MyFirebaseInstanceIDService:FirebaseMessagingService(){
     val CHANNEL_LOW_ID  = "channel_222"
     val NOTIFICATION_ID = 1
 
-    private fun pushNotification(title:String,body:String){
+    fun pushNotification(title:String,body:String){
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 

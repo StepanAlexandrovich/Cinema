@@ -11,7 +11,7 @@ import java.android.cinema.databinding.ItemMovieBinding
 
 class RecyclerAdapterMovies(private val index:Int, private val onItemClick: OnItemClick): RecyclerView.Adapter<RecyclerAdapterMovies.ViewHolder>() {
 
-    private val movies = MainActivity.localMovies.genres[index].list
+    private val movies = MainActivity.movies.genres[index].list
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemMovieBinding.inflate(LayoutInflater.from(parent.context))

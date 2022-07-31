@@ -1,4 +1,4 @@
-package java.android.cinema.view
+package java.android.cinema.view.view_movie.extra
 
 import android.widget.EditText
 import android.view.LayoutInflater
@@ -6,13 +6,8 @@ import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import android.widget.RatingBar
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import java.android.cinema.R
-import java.android.cinema.activity.MainActivity
-import java.android.cinema.databinding.DialogCustomBinding
-import java.android.cinema.databinding.FragmentMovieBinding
 
 class CustomDialogFragmentWithView : DialogFragment() {
     companion object {

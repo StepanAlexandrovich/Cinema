@@ -26,12 +26,12 @@
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.Toolbar
+            app:titleTextColor="@color/white"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/toolbar"
-            android:background="@color/turquoise"
-            app:titleTextColor="@color/white">
+            android:background="@color/turquoise">
 
         </androidx.appcompat.widget.Toolbar>
 

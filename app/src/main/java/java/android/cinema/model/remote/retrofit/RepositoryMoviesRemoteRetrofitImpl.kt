@@ -6,6 +6,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.android.cinema.API_KEY
 import java.android.cinema.BuildConfig
 import java.android.cinema.model.MoviesCallback
 import java.android.cinema.model.remote.dto.ConvertDTOinMovies
@@ -21,9 +22,8 @@ class RepositoryMoviesRemoteRetrofitImpl: RepositoryMovies {
         retrofitImpl.addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
         val api = retrofitImpl.build().create(MoviesAPI::class.java)
 
-        val key: String = "k_71rwtkzg"  //запаска
-        //api.getMovies("/en/API/SearchMovie/${BuildConfig.API_KEY}/${stringGenre}").enqueue(object : Callback<MoviesDTO> {
-        api.getMovies("/en/API/SearchMovie/${key}/${stringGenre}").enqueue(object : Callback<MoviesDTO> {
+        //api.getMovies("/en/API/SearchMovie/${BuildConfig.API_KEY}/${stringGenre}").enqueue(object : Callback<MoviesDTO> {  // утрата из за release сборки
+        api.getMovies("/en/API/SearchMovie/${API_KEY}/${stringGenre}").enqueue(object : Callback<MoviesDTO> {
             override fun onResponse(call: Call<MoviesDTO>, response: Response<MoviesDTO>) {
                 if(response.isSuccessful&&response.body()!=null){
                     callback.onResponse(ConvertDTOinMovies.returnList(response.body()!!))
