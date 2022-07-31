@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title=""
+        android:id="@+id/menuSelected"
+        android:icon="@drawable/ic_movies_root"
+        app:showAsAction="always" />
+
+    <item
+        android:title=""
+        android:id="@+id/menuInternet"
+        android:icon="@drawable/ic_movies_internet"
+        app:showAsAction="always" />
+
+    <item
+        android:title=""
+        android:id="@+id/menuExtra"
+        android:icon="@drawable/ic_extra"
+        app:showAsAction="always" >
+
+        <menu>
+            <item
+                android:id="@+id/menuPhones"
+                android:title="@string/menu_phones"
+                app:showAsAction="never" >
+            </item>
+
+            <item
+                android:id="@+id/menuGeolocation"
+                android:title="@string/menu_geolocation"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/menuPush"
+                android:title="@string/menu_push"
+                app:showAsAction="never" />
+
+        </menu>
+
+    </item>
+
+
+
+</menu>
